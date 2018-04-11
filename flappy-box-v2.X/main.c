@@ -41,13 +41,24 @@
 */
 
 #include "mcc_generated_files/mcc.h"
+#include <stdlib.h>
 
 /*
                          Main application
  */
 
 uint8_t writebuffer[17];
-uint16_t displaybuffer[8];
+uint16_t pixelbuffer[8];
+
+uint8_t walls[8];
+uint8_t createWall = 0;
+uint8_t elevation = 0;
+uint16_t score = 0;
+uint16_t hiscore = 0;
+bool fall = true;
+bool start = false;
+uint8_t gravityCounter = 0;
+uint16_t shiftCounter = 0;
 
 #define OFF 0
 #define GREEN 1
@@ -57,35 +68,35 @@ uint16_t displaybuffer[8];
 void writeDisplay() {
     writebuffer[0] = 0;
     for (uint8_t i = 1; i < 17; i += 2) {
-        writebuffer[i] = displaybuffer[i/2] & 0xFF;
-        writebuffer[i + 1] = displaybuffer[i/2] >> 8;
+        writebuffer[i] = pixelbuffer[i/2] & 0xFF;
+        writebuffer[i + 1] = pixelbuffer[i/2] >> 8;
     }
     i2c_writeNBytes(0x70, writebuffer, 17);
 }
 
 void drawPixel(uint8_t x, uint8_t y, uint8_t color) {
     if (color == GREEN) {
-        displaybuffer[y] |= 1 << x;
-        displaybuffer[y] &= ~(1 << (x + 8));
+        pixelbuffer[y] |= 1 << x;
+        pixelbuffer[y] &= ~(1 << (x + 8));
     } else if (color == RED) {
-        displaybuffer[y] |= 1 << (x + 8);
-        displaybuffer[y] &= ~(1 << x);
+        pixelbuffer[y] |= 1 << (x + 8);
+        pixelbuffer[y] &= ~(1 << x);
     } else if (color == YELLOW) {
-        displaybuffer[y] |= (1 << (x + 8)) | (1 << x);
+        pixelbuffer[y] |= (1 << (x + 8)) | (1 << x);
     } else if (color == OFF) {
-        displaybuffer[y] &= ~(1 << x) & ~(1 << (x + 8));
+        pixelbuffer[y] &= ~(1 << x) & ~(1 << (x + 8));
     }
 }
 
-void clearDisplayBuffer() {
+void clearPixels() {
     for (int i = 0; i < 8; i++) {
-        displaybuffer[i] = 0;
+        pixelbuffer[i] = 0;
     }
 }
 
 void initializeDisplay() {
     for (uint8_t i = 0; i < 8; i++) {
-        displaybuffer[i] = 0;
+        pixelbuffer[i] = 0;
     }
     for (uint8_t i = 0; i < 8; i++) {
         writebuffer[i] = 0;
@@ -94,7 +105,7 @@ void initializeDisplay() {
     writebuffer[0] = 0x21;
     i2c_writeNBytes(0x70, writebuffer, 1);
     
-    // set blink rate to 0
+    // set blink rate to not blink
     writebuffer[0] = 0x80 | 0x01;
     i2c_writeNBytes(0x70, writebuffer, 1);
 }
@@ -107,18 +118,26 @@ void main(void)
     
     initializeDisplay();
     
-    uint16_t x = 0;
-    uint16_t y = 0;
+    elevation = 3;
+    
+    //while (!start);
+    
     while (1)
     {
-        drawPixel(x, y, (x + y)%4);
-        x += 1;
-        if (x == 8) {
-            x = 0;
-            y += 1;
-        }
+        drawPixel(1, elevation, YELLOW);
         writeDisplay();
-        __delay_ms(300);
+        clearPixels();
+        if (gravityCounter >= 20) {
+            if (fall) {
+                elevation += 1;
+            } else {
+                elevation -= 1;
+                fall = true;
+            }
+            gravityCounter = 0;
+        } else {
+            gravityCounter++;
+        }
     }
 }
 /**

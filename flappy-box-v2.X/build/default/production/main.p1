@@ -17,10 +17,6 @@ Version 3.2 HI-TECH Software Intermediate Code
 [n S25 . . . ]
 "372
 [v _INTCONbits `VS25 ~T0 @X0 0 e@11 ]
-[v F11946 `(v ~T0 @X0 1 tf1`ul ]
-"153 C:\Program Files (x86)\Microchip\xc8\v1.45\include\pic.h
-[v __delay `JF11946 ~T0 @X0 0 e ]
-[p i __delay ]
 [; ;htc.h: 26: extern const char __xc8_OPTIM_SPEED;
 [; ;htc.h: 28: extern double __fpnormalize(double);
 [; ;xc8debug.h: 14: extern void __builtin_software_breakpoint(void);
@@ -10903,6 +10899,13 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;i2c_types.h: 52: i2c_operations_t i2c_returnReset(void *p);
 [; ;i2c_types.h: 53: i2c_operations_t i2c_restartWrite(void *p);
 [; ;i2c_types.h: 54: i2c_operations_t i2c_restartRead(void *p);
+[; ;i2c_simple_master.h: 29: uint8_t i2c_read1ByteRegister(i2c_address_t address, uint8_t reg);
+[; ;i2c_simple_master.h: 30: uint16_t i2c_read2ByteRegister(i2c_address_t address, uint8_t reg);
+[; ;i2c_simple_master.h: 31: void i2c_write1ByteRegister(i2c_address_t address, uint8_t reg, uint8_t data);
+[; ;i2c_simple_master.h: 32: void i2c_write2ByteRegister(i2c_address_t address, uint8_t reg, uint16_t data);
+[; ;i2c_simple_master.h: 34: void i2c_writeNBytes(i2c_address_t address, void* data, size_t len);
+[; ;i2c_simple_master.h: 35: void i2c_readDataBlock(i2c_address_t address, uint8_t reg, void *data, size_t len);
+[; ;i2c_simple_master.h: 36: void i2c_readNBytes(i2c_address_t address, void *data, size_t len);
 [; ;i2c_master.h: 31: typedef i2c_operations_t (*i2c_callback)(void *p);
 [; ;i2c_master.h: 35: i2c_error_t i2c_open(i2c_address_t address);
 [; ;i2c_master.h: 36: void i2c_setAddress(i2c_address_t address);
@@ -10919,244 +10922,403 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;i2c_master.h: 50: void i2c_setTimeOutCallback(i2c_callback cb, void *p);
 [; ;i2c_master.h: 53: void i2c_ISR(void);
 [; ;i2c_master.h: 54: void i2c_busCollisionISR(void);
-[; ;i2c_simple_master.h: 29: uint8_t i2c_read1ByteRegister(i2c_address_t address, uint8_t reg);
-[; ;i2c_simple_master.h: 30: uint16_t i2c_read2ByteRegister(i2c_address_t address, uint8_t reg);
-[; ;i2c_simple_master.h: 31: void i2c_write1ByteRegister(i2c_address_t address, uint8_t reg, uint8_t data);
-[; ;i2c_simple_master.h: 32: void i2c_write2ByteRegister(i2c_address_t address, uint8_t reg, uint16_t data);
-[; ;i2c_simple_master.h: 34: void i2c_writeNBytes(i2c_address_t address, void* data, size_t len);
-[; ;i2c_simple_master.h: 35: void i2c_readDataBlock(i2c_address_t address, uint8_t reg, void *data, size_t len);
-[; ;i2c_simple_master.h: 36: void i2c_readNBytes(i2c_address_t address, void *data, size_t len);
 [; ;mcc.h: 71: void SYSTEM_Initialize(void);
 [; ;mcc.h: 84: void OSCILLATOR_Initialize(void);
-"49 main.c
+[; ;stdlib.h: 7: typedef unsigned short wchar_t;
+[; ;stdlib.h: 15: typedef struct {
+[; ;stdlib.h: 16: int rem;
+[; ;stdlib.h: 17: int quot;
+[; ;stdlib.h: 18: } div_t;
+[; ;stdlib.h: 19: typedef struct {
+[; ;stdlib.h: 20: unsigned rem;
+[; ;stdlib.h: 21: unsigned quot;
+[; ;stdlib.h: 22: } udiv_t;
+[; ;stdlib.h: 23: typedef struct {
+[; ;stdlib.h: 24: long quot;
+[; ;stdlib.h: 25: long rem;
+[; ;stdlib.h: 26: } ldiv_t;
+[; ;stdlib.h: 27: typedef struct {
+[; ;stdlib.h: 28: unsigned long quot;
+[; ;stdlib.h: 29: unsigned long rem;
+[; ;stdlib.h: 30: } uldiv_t;
+[; ;stdlib.h: 53: extern double atof(const char *);
+[; ;stdlib.h: 54: extern double strtod(const char *, const char **);
+[; ;stdlib.h: 55: extern int atoi(const char *);
+[; ;stdlib.h: 56: extern unsigned xtoi(const char *);
+[; ;stdlib.h: 57: extern long atol(const char *);
+[; ;stdlib.h: 58: extern long strtol(const char *, char **, int);
+[; ;stdlib.h: 60: extern int rand(void);
+[; ;stdlib.h: 61: extern void srand(unsigned int);
+[; ;stdlib.h: 62: extern void * calloc(size_t, size_t);
+[; ;stdlib.h: 63: extern div_t div(int numer, int denom);
+[; ;stdlib.h: 64: extern udiv_t udiv(unsigned numer, unsigned denom);
+[; ;stdlib.h: 65: extern ldiv_t ldiv(long numer, long denom);
+[; ;stdlib.h: 66: extern uldiv_t uldiv(unsigned long numer,unsigned long denom);
+[; ;stdlib.h: 67: extern unsigned long _lrotl(unsigned long value, unsigned int shift);
+[; ;stdlib.h: 68: extern unsigned long _lrotr(unsigned long value, unsigned int shift);
+[; ;stdlib.h: 69: extern unsigned int _rotl(unsigned int value, unsigned int shift);
+[; ;stdlib.h: 70: extern unsigned int _rotr(unsigned int value, unsigned int shift);
+[; ;stdlib.h: 75: extern void * malloc(size_t);
+[; ;stdlib.h: 76: extern void free(void *);
+[; ;stdlib.h: 77: extern void * realloc(void *, size_t);
+[; ;stdlib.h: 86: extern int atexit(void (*)(void));
+[; ;stdlib.h: 87: extern char * getenv(const char *);
+[; ;stdlib.h: 88: extern char ** environ;
+[; ;stdlib.h: 89: extern int system(char *);
+[; ;stdlib.h: 90: extern void qsort(void *, size_t, size_t, int (*)(const void *, const void *));
+[; ;stdlib.h: 91: extern void * bsearch(const void *, void *, size_t, size_t, int(*)(const void *, const void *));
+[; ;stdlib.h: 92: extern int abs(int);
+[; ;stdlib.h: 93: extern long labs(long);
+[; ;stdlib.h: 95: extern char * itoa(char * buf, int val, int base);
+[; ;stdlib.h: 96: extern char * utoa(char * buf, unsigned val, int base);
+[; ;stdlib.h: 101: extern char * ltoa(char * buf, long val, int base);
+[; ;stdlib.h: 102: extern char * ultoa(char * buf, unsigned long val, int base);
+[; ;stdlib.h: 104: extern char * ftoa(float f, int * status);
+"50 main.c
 [v _writebuffer `uc ~T0 @X0 -> 17 `i e ]
-[; ;main.c: 49: uint8_t writebuffer[17];
-"50
-[v _displaybuffer `ui ~T0 @X0 -> 8 `i e ]
-[; ;main.c: 50: uint16_t displaybuffer[8];
+[; ;main.c: 50: uint8_t writebuffer[17];
+"51
+[v _pixelbuffer `ui ~T0 @X0 -> 8 `i e ]
+[; ;main.c: 51: uint16_t pixelbuffer[8];
+"53
+[v _walls `uc ~T0 @X0 -> 8 `i e ]
+[; ;main.c: 53: uint8_t walls[8];
+"54
+[v _createWall `uc ~T0 @X0 1 e ]
+[i _createWall
+-> -> 0 `i `uc
+]
+[; ;main.c: 54: uint8_t createWall = 0;
+"55
+[v _elevation `uc ~T0 @X0 1 e ]
+[i _elevation
+-> -> 0 `i `uc
+]
+[; ;main.c: 55: uint8_t elevation = 0;
+"56
+[v _score `ui ~T0 @X0 1 e ]
+[i _score
+-> -> 0 `i `ui
+]
+[; ;main.c: 56: uint16_t score = 0;
 "57
+[v _hiscore `ui ~T0 @X0 1 e ]
+[i _hiscore
+-> -> 0 `i `ui
+]
+[; ;main.c: 57: uint16_t hiscore = 0;
+"58
+[v _fall `uc ~T0 @X0 1 e ]
+[i _fall
+-> -> 1 `i `uc
+]
+[; ;main.c: 58: bool fall = 1;
+"59
+[v _start `uc ~T0 @X0 1 e ]
+[i _start
+-> -> 0 `i `uc
+]
+[; ;main.c: 59: bool start = 0;
+"60
+[v _gravityCounter `uc ~T0 @X0 1 e ]
+[i _gravityCounter
+-> -> 0 `i `uc
+]
+[; ;main.c: 60: uint8_t gravityCounter = 0;
+"61
+[v _shiftCounter `ui ~T0 @X0 1 e ]
+[i _shiftCounter
+-> -> 0 `i `ui
+]
+[; ;main.c: 61: uint16_t shiftCounter = 0;
+"68
 [v _writeDisplay `(v ~T0 @X0 1 ef ]
 {
-[; ;main.c: 57: void writeDisplay() {
+[; ;main.c: 68: void writeDisplay() {
 [e :U _writeDisplay ]
 [f ]
-[; ;main.c: 58: writebuffer[0] = 0;
-"58
+[; ;main.c: 69: writebuffer[0] = 0;
+"69
 [e = *U + &U _writebuffer * -> -> -> 0 `i `ui `ux -> -> # *U &U _writebuffer `ui `ux -> -> 0 `i `uc ]
-[; ;main.c: 59: for (uint8_t i = 1; i < 17; i += 2) {
-"59
+[; ;main.c: 70: for (uint8_t i = 1; i < 17; i += 2) {
+"70
 {
 [v _i `uc ~T0 @X0 1 a ]
 [e = _i -> -> 1 `i `uc ]
-[e $ < -> _i `i -> 17 `i 1213  ]
-[e $U 1214  ]
-[e :U 1213 ]
+[e $ < -> _i `i -> 17 `i 1217  ]
+[e $U 1218  ]
+[e :U 1217 ]
 {
-[; ;main.c: 60: writebuffer[i] = displaybuffer[i/2] & 0xFF;
-"60
-[e = *U + &U _writebuffer * -> _i `ux -> -> # *U &U _writebuffer `ui `ux -> & *U + &U _displaybuffer * -> -> / -> _i `i -> 2 `i `ui `ux -> -> # *U &U _displaybuffer `ui `ux -> -> 255 `i `ui `uc ]
-[; ;main.c: 61: writebuffer[i + 1] = displaybuffer[i/2] >> 8;
-"61
-[e = *U + &U _writebuffer * -> -> + -> _i `i -> 1 `i `ui `ux -> -> # *U &U _writebuffer `ui `ux -> >> *U + &U _displaybuffer * -> -> / -> _i `i -> 2 `i `ui `ux -> -> # *U &U _displaybuffer `ui `ux -> 8 `i `uc ]
-"62
+[; ;main.c: 71: writebuffer[i] = pixelbuffer[i/2] & 0xFF;
+"71
+[e = *U + &U _writebuffer * -> _i `ux -> -> # *U &U _writebuffer `ui `ux -> & *U + &U _pixelbuffer * -> -> / -> _i `i -> 2 `i `ui `ux -> -> # *U &U _pixelbuffer `ui `ux -> -> 255 `i `ui `uc ]
+[; ;main.c: 72: writebuffer[i + 1] = pixelbuffer[i/2] >> 8;
+"72
+[e = *U + &U _writebuffer * -> -> + -> _i `i -> 1 `i `ui `ux -> -> # *U &U _writebuffer `ui `ux -> >> *U + &U _pixelbuffer * -> -> / -> _i `i -> 2 `i `ui `ux -> -> # *U &U _pixelbuffer `ui `ux -> 8 `i `uc ]
+"73
 }
-"59
+"70
 [e =+ _i -> -> 2 `i `uc ]
-[e $ < -> _i `i -> 17 `i 1213  ]
-[e :U 1214 ]
-"62
+[e $ < -> _i `i -> 17 `i 1217  ]
+[e :U 1218 ]
+"73
 }
-[; ;main.c: 62: }
-[; ;main.c: 63: i2c_writeNBytes(0x70, writebuffer, 17);
-"63
+[; ;main.c: 73: }
+[; ;main.c: 74: i2c_writeNBytes(0x70, writebuffer, 17);
+"74
 [e ( _i2c_writeNBytes (3 , , -> -> 112 `i `uc -> &U _writebuffer `*v -> -> 17 `i `ui ]
-[; ;main.c: 64: }
-"64
-[e :UE 1212 ]
+[; ;main.c: 75: }
+"75
+[e :UE 1216 ]
 }
-"66
+"77
 [v _drawPixel `(v ~T0 @X0 1 ef3`uc`uc`uc ]
 {
-[; ;main.c: 66: void drawPixel(uint8_t x, uint8_t y, uint8_t color) {
+[; ;main.c: 77: void drawPixel(uint8_t x, uint8_t y, uint8_t color) {
 [e :U _drawPixel ]
 [v _x `uc ~T0 @X0 1 r1 ]
 [v _y `uc ~T0 @X0 1 r2 ]
 [v _color `uc ~T0 @X0 1 r3 ]
 [f ]
-[; ;main.c: 67: if (color == 1) {
-"67
-[e $ ! == -> _color `i -> 1 `i 1217  ]
+[; ;main.c: 78: if (color == 1) {
+"78
+[e $ ! == -> _color `i -> 1 `i 1221  ]
 {
-[; ;main.c: 68: displaybuffer[y] |= 1 << x;
-"68
-[e =| *U + &U _displaybuffer * -> _y `ux -> -> # *U &U _displaybuffer `ui `ux -> << -> 1 `i _x `ui ]
-[; ;main.c: 69: displaybuffer[y] &= ~(1 << (x + 8));
-"69
-[e =& *U + &U _displaybuffer * -> _y `ux -> -> # *U &U _displaybuffer `ui `ux -> ~ << -> 1 `i + -> _x `i -> 8 `i `ui ]
-"70
+[; ;main.c: 79: pixelbuffer[y] |= 1 << x;
+"79
+[e =| *U + &U _pixelbuffer * -> _y `ux -> -> # *U &U _pixelbuffer `ui `ux -> << -> 1 `i _x `ui ]
+[; ;main.c: 80: pixelbuffer[y] &= ~(1 << (x + 8));
+"80
+[e =& *U + &U _pixelbuffer * -> _y `ux -> -> # *U &U _pixelbuffer `ui `ux -> ~ << -> 1 `i + -> _x `i -> 8 `i `ui ]
+"81
 }
-[; ;main.c: 70: } else if (color == 2) {
-[e $U 1218  ]
-[e :U 1217 ]
-[e $ ! == -> _color `i -> 2 `i 1219  ]
-{
-[; ;main.c: 71: displaybuffer[y] |= 1 << (x + 8);
-"71
-[e =| *U + &U _displaybuffer * -> _y `ux -> -> # *U &U _displaybuffer `ui `ux -> << -> 1 `i + -> _x `i -> 8 `i `ui ]
-[; ;main.c: 72: displaybuffer[y] &= ~(1 << x);
-"72
-[e =& *U + &U _displaybuffer * -> _y `ux -> -> # *U &U _displaybuffer `ui `ux -> ~ << -> 1 `i _x `ui ]
-"73
-}
-[; ;main.c: 73: } else if (color == 3) {
-[e $U 1220  ]
-[e :U 1219 ]
-[e $ ! == -> _color `i -> 3 `i 1221  ]
-{
-[; ;main.c: 74: displaybuffer[y] |= (1 << (x + 8)) | (1 << x);
-"74
-[e =| *U + &U _displaybuffer * -> _y `ux -> -> # *U &U _displaybuffer `ui `ux -> | << -> 1 `i + -> _x `i -> 8 `i << -> 1 `i _x `ui ]
-"75
-}
-[; ;main.c: 75: } else if (color == 0) {
+[; ;main.c: 81: } else if (color == 2) {
 [e $U 1222  ]
 [e :U 1221 ]
-[e $ ! == -> _color `i -> 0 `i 1223  ]
+[e $ ! == -> _color `i -> 2 `i 1223  ]
 {
-[; ;main.c: 76: displaybuffer[y] &= ~(1 << x) & ~(1 << (x + 8));
-"76
-[e =& *U + &U _displaybuffer * -> _y `ux -> -> # *U &U _displaybuffer `ui `ux -> & ~ << -> 1 `i _x ~ << -> 1 `i + -> _x `i -> 8 `i `ui ]
-"77
-}
-[e :U 1223 ]
-"78
-[e :U 1222 ]
-[e :U 1220 ]
-[e :U 1218 ]
-[; ;main.c: 77: }
-[; ;main.c: 78: }
-[e :UE 1216 ]
-}
-[v $root$_main `(v ~T0 @X0 0 e ]
-"80
-[v _main `(v ~T0 @X0 1 ef ]
-"81
-{
-[; ;main.c: 80: void main(void)
-[; ;main.c: 81: {
-[e :U _main ]
-[f ]
-[; ;main.c: 83: SYSTEM_Initialize();
+[; ;main.c: 82: pixelbuffer[y] |= 1 << (x + 8);
+"82
+[e =| *U + &U _pixelbuffer * -> _y `ux -> -> # *U &U _pixelbuffer `ui `ux -> << -> 1 `i + -> _x `i -> 8 `i `ui ]
+[; ;main.c: 83: pixelbuffer[y] &= ~(1 << x);
 "83
-[e ( _SYSTEM_Initialize ..  ]
-[; ;main.c: 89: (INTCONbits.GIE = 1);
-"89
-[e = . . _INTCONbits 0 7 -> -> 1 `i `uc ]
-[; ;main.c: 92: (INTCONbits.PEIE = 1);
-"92
-[e = . . _INTCONbits 0 6 -> -> 1 `i `uc ]
-[; ;main.c: 94: for (uint8_t i = 0; i < 8; i++) {
-"94
+[e =& *U + &U _pixelbuffer * -> _y `ux -> -> # *U &U _pixelbuffer `ui `ux -> ~ << -> 1 `i _x `ui ]
+"84
+}
+[; ;main.c: 84: } else if (color == 3) {
+[e $U 1224  ]
+[e :U 1223 ]
+[e $ ! == -> _color `i -> 3 `i 1225  ]
 {
-[v _i `uc ~T0 @X0 1 a ]
-[e = _i -> -> 0 `i `uc ]
-[e $ < -> _i `i -> 8 `i 1225  ]
+[; ;main.c: 85: pixelbuffer[y] |= (1 << (x + 8)) | (1 << x);
+"85
+[e =| *U + &U _pixelbuffer * -> _y `ux -> -> # *U &U _pixelbuffer `ui `ux -> | << -> 1 `i + -> _x `i -> 8 `i << -> 1 `i _x `ui ]
+"86
+}
+[; ;main.c: 86: } else if (color == 0) {
 [e $U 1226  ]
 [e :U 1225 ]
+[e $ ! == -> _color `i -> 0 `i 1227  ]
 {
-[; ;main.c: 95: writebuffer[i] = 0;
-"95
-[e = *U + &U _writebuffer * -> _i `ux -> -> # *U &U _writebuffer `ui `ux -> -> 0 `i `uc ]
-"96
+[; ;main.c: 87: pixelbuffer[y] &= ~(1 << x) & ~(1 << (x + 8));
+"87
+[e =& *U + &U _pixelbuffer * -> _y `ux -> -> # *U &U _pixelbuffer `ui `ux -> & ~ << -> 1 `i _x ~ << -> 1 `i + -> _x `i -> 8 `i `ui ]
+"88
 }
-"94
-[e ++ _i -> -> 1 `i `uc ]
-[e $ < -> _i `i -> 8 `i 1225  ]
+[e :U 1227 ]
+"89
 [e :U 1226 ]
-"96
+[e :U 1224 ]
+[e :U 1222 ]
+[; ;main.c: 88: }
+[; ;main.c: 89: }
+[e :UE 1220 ]
 }
-[; ;main.c: 96: }
-[; ;main.c: 97: writebuffer[0] = 0x21;
+"91
+[v _clearPixels `(v ~T0 @X0 1 ef ]
+{
+[; ;main.c: 91: void clearPixels() {
+[e :U _clearPixels ]
+[f ]
+[; ;main.c: 92: for (int i = 0; i < 8; i++) {
+"92
+{
+[v _i `i ~T0 @X0 1 a ]
+[e = _i -> 0 `i ]
+[e $ < _i -> 8 `i 1229  ]
+[e $U 1230  ]
+[e :U 1229 ]
+{
+[; ;main.c: 93: pixelbuffer[i] = 0;
+"93
+[e = *U + &U _pixelbuffer * -> -> _i `ui `ux -> -> # *U &U _pixelbuffer `ui `ux -> -> 0 `i `ui ]
+"94
+}
+"92
+[e ++ _i -> 1 `i ]
+[e $ < _i -> 8 `i 1229  ]
+[e :U 1230 ]
+"94
+}
+[; ;main.c: 94: }
+[; ;main.c: 95: }
+"95
+[e :UE 1228 ]
+}
 "97
-[e = *U + &U _writebuffer * -> -> -> 0 `i `ui `ux -> -> # *U &U _writebuffer `ui `ux -> -> 33 `i `uc ]
-[; ;main.c: 98: i2c_writeNBytes(0x70, writebuffer, 1);
+[v _initializeDisplay `(v ~T0 @X0 1 ef ]
+{
+[; ;main.c: 97: void initializeDisplay() {
+[e :U _initializeDisplay ]
+[f ]
+[; ;main.c: 98: for (uint8_t i = 0; i < 8; i++) {
 "98
-[e ( _i2c_writeNBytes (3 , , -> -> 112 `i `uc -> &U _writebuffer `*v -> -> 1 `i `ui ]
-[; ;main.c: 100: for (uint8_t i = 0; i < 8; i++) {
-"100
 {
 [v _i `uc ~T0 @X0 1 a ]
 [e = _i -> -> 0 `i `uc ]
-[e $ < -> _i `i -> 8 `i 1228  ]
-[e $U 1229  ]
-[e :U 1228 ]
-{
-[; ;main.c: 101: displaybuffer[i] = 0;
-"101
-[e = *U + &U _displaybuffer * -> _i `ux -> -> # *U &U _displaybuffer `ui `ux -> -> 0 `i `ui ]
-"102
-}
-"100
-[e ++ _i -> -> 1 `i `uc ]
-[e $ < -> _i `i -> 8 `i 1228  ]
-[e :U 1229 ]
-"102
-}
-[; ;main.c: 102: }
-[; ;main.c: 104: writebuffer[0] = 0x80 | 0x01;
-"104
-[e = *U + &U _writebuffer * -> -> -> 0 `i `ui `ux -> -> # *U &U _writebuffer `ui `ux -> | -> 128 `i -> 1 `i `uc ]
-[; ;main.c: 105: i2c_writeNBytes(0x70, writebuffer, 1);
-"105
-[e ( _i2c_writeNBytes (3 , , -> -> 112 `i `uc -> &U _writebuffer `*v -> -> 1 `i `ui ]
-"107
-[v _x `ui ~T0 @X0 1 a ]
-[; ;main.c: 107: uint16_t x = 0;
-[e = _x -> -> 0 `i `ui ]
-"108
-[v _y `ui ~T0 @X0 1 a ]
-[; ;main.c: 108: uint16_t y = 0;
-[e = _y -> -> 0 `i `ui ]
-[; ;main.c: 109: while (1)
-"109
-[e :U 1232 ]
-[; ;main.c: 110: {
-"110
-{
-[; ;main.c: 111: drawPixel(x, y, (x + y)%4);
-"111
-[e ( _drawPixel (3 , , -> _x `uc -> _y `uc -> % + _x _y -> -> 4 `i `ui `uc ]
-[; ;main.c: 112: x += 1;
-"112
-[e =+ _x -> -> 1 `i `ui ]
-[; ;main.c: 113: if (x == 8) {
-"113
-[e $ ! == _x -> -> 8 `i `ui 1234  ]
-{
-[; ;main.c: 114: x = 0;
-"114
-[e = _x -> -> 0 `i `ui ]
-[; ;main.c: 115: y += 1;
-"115
-[e =+ _y -> -> 1 `i `ui ]
-"116
-}
-[e :U 1234 ]
-[; ;main.c: 116: }
-[; ;main.c: 117: writeDisplay();
-"117
-[e ( _writeDisplay ..  ]
-[; ;main.c: 118: _delay((unsigned long)((300)*(1000000/4000.0)));
-"118
-[e ( __delay (1 -> * -> -> 300 `i `d / -> -> 1000000 `l `d .4000.0 `ul ]
-"119
-}
-[e :U 1231 ]
-"109
-[e $U 1232  ]
+[e $ < -> _i `i -> 8 `i 1233  ]
+[e $U 1234  ]
 [e :U 1233 ]
-[; ;main.c: 119: }
-[; ;main.c: 120: }
-"120
-[e :UE 1224 ]
+{
+[; ;main.c: 99: pixelbuffer[i] = 0;
+"99
+[e = *U + &U _pixelbuffer * -> _i `ux -> -> # *U &U _pixelbuffer `ui `ux -> -> 0 `i `ui ]
+"100
+}
+"98
+[e ++ _i -> -> 1 `i `uc ]
+[e $ < -> _i `i -> 8 `i 1233  ]
+[e :U 1234 ]
+"100
+}
+[; ;main.c: 100: }
+[; ;main.c: 101: for (uint8_t i = 0; i < 8; i++) {
+"101
+{
+[v _i `uc ~T0 @X0 1 a ]
+[e = _i -> -> 0 `i `uc ]
+[e $ < -> _i `i -> 8 `i 1236  ]
+[e $U 1237  ]
+[e :U 1236 ]
+{
+[; ;main.c: 102: writebuffer[i] = 0;
+"102
+[e = *U + &U _writebuffer * -> _i `ux -> -> # *U &U _writebuffer `ui `ux -> -> 0 `i `uc ]
+"103
+}
+"101
+[e ++ _i -> -> 1 `i `uc ]
+[e $ < -> _i `i -> 8 `i 1236  ]
+[e :U 1237 ]
+"103
+}
+[; ;main.c: 103: }
+[; ;main.c: 105: writebuffer[0] = 0x21;
+"105
+[e = *U + &U _writebuffer * -> -> -> 0 `i `ui `ux -> -> # *U &U _writebuffer `ui `ux -> -> 33 `i `uc ]
+[; ;main.c: 106: i2c_writeNBytes(0x70, writebuffer, 1);
+"106
+[e ( _i2c_writeNBytes (3 , , -> -> 112 `i `uc -> &U _writebuffer `*v -> -> 1 `i `ui ]
+[; ;main.c: 109: writebuffer[0] = 0x80 | 0x01;
+"109
+[e = *U + &U _writebuffer * -> -> -> 0 `i `ui `ux -> -> # *U &U _writebuffer `ui `ux -> | -> 128 `i -> 1 `i `uc ]
+[; ;main.c: 110: i2c_writeNBytes(0x70, writebuffer, 1);
+"110
+[e ( _i2c_writeNBytes (3 , , -> -> 112 `i `uc -> &U _writebuffer `*v -> -> 1 `i `ui ]
+[; ;main.c: 111: }
+"111
+[e :UE 1232 ]
+}
+[v $root$_main `(v ~T0 @X0 0 e ]
+"113
+[v _main `(v ~T0 @X0 1 ef ]
+"114
+{
+[; ;main.c: 113: void main(void)
+[; ;main.c: 114: {
+[e :U _main ]
+[f ]
+[; ;main.c: 115: SYSTEM_Initialize();
+"115
+[e ( _SYSTEM_Initialize ..  ]
+[; ;main.c: 116: (INTCONbits.GIE = 1);
+"116
+[e = . . _INTCONbits 0 7 -> -> 1 `i `uc ]
+[; ;main.c: 117: (INTCONbits.PEIE = 1);
+"117
+[e = . . _INTCONbits 0 6 -> -> 1 `i `uc ]
+[; ;main.c: 119: initializeDisplay();
+"119
+[e ( _initializeDisplay ..  ]
+[; ;main.c: 121: elevation = 3;
+"121
+[e = _elevation -> -> 3 `i `uc ]
+[; ;main.c: 125: while (1)
+"125
+[e :U 1241 ]
+[; ;main.c: 126: {
+"126
+{
+[; ;main.c: 127: drawPixel(1, elevation, 3);
+"127
+[e ( _drawPixel (3 , , -> -> 1 `i `uc _elevation -> -> 3 `i `uc ]
+[; ;main.c: 128: writeDisplay();
+"128
+[e ( _writeDisplay ..  ]
+[; ;main.c: 129: clearPixels();
+"129
+[e ( _clearPixels ..  ]
+[; ;main.c: 130: if (gravityCounter >= 20) {
+"130
+[e $ ! >= -> _gravityCounter `i -> 20 `i 1243  ]
+{
+[; ;main.c: 131: if (fall) {
+"131
+[e $ ! != -> _fall `i -> -> -> 0 `i `uc `i 1244  ]
+{
+[; ;main.c: 132: elevation += 1;
+"132
+[e =+ _elevation -> -> 1 `i `uc ]
+"133
+}
+[; ;main.c: 133: } else {
+[e $U 1245  ]
+[e :U 1244 ]
+{
+[; ;main.c: 134: elevation -= 1;
+"134
+[e =- _elevation -> -> 1 `i `uc ]
+[; ;main.c: 135: fall = 1;
+"135
+[e = _fall -> -> 1 `i `uc ]
+"136
+}
+[e :U 1245 ]
+[; ;main.c: 136: }
+[; ;main.c: 137: gravityCounter = 0;
+"137
+[e = _gravityCounter -> -> 0 `i `uc ]
+"138
+}
+[; ;main.c: 138: } else {
+[e $U 1246  ]
+[e :U 1243 ]
+{
+[; ;main.c: 139: gravityCounter++;
+"139
+[e ++ _gravityCounter -> -> 1 `i `uc ]
+"140
+}
+[e :U 1246 ]
+"141
+}
+[e :U 1240 ]
+"125
+[e $U 1241  ]
+[e :U 1242 ]
+[; ;main.c: 140: }
+[; ;main.c: 141: }
+[; ;main.c: 142: }
+"142
+[e :UE 1239 ]
 }

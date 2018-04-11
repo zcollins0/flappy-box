@@ -1,9 +1,9 @@
 
 Memory Summary:
-    Program space        used   7E2h (  2018) of  2000h words   ( 24.6%)
-    Data space           used    89h (   137) of   3F0h bytes   ( 13.6%)
+    Program space        used   805h (  2053) of  2000h words   ( 25.1%)
+    Data space           used    96h (   150) of   3F0h bytes   ( 14.9%)
     EEPROM space         None available
-    Data stack space     used     0h (     0) of   36Fh bytes   (  0.0%)
+    Data stack space     used     0h (     0) of   367h bytes   (  0.0%)
     Configuration bits   used     3h (     3) of     3h words   (100.0%)
     ID Location space    used     0h (     0) of     4h bytes   (  0.0%)
 

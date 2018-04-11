@@ -11,6 +11,8 @@ Version 3.2 HI-TECH Software Intermediate Code
 [v _OSCTUNE `Vuc ~T0 @X0 0 e@152 ]
 "3048
 [v _BORCON `Vuc ~T0 @X0 0 e@278 ]
+"30878
+[v _PLLR `Vb ~T0 @X0 0 e@1238 ]
 "49 mcc_generated_files/mcc.c
 [p x FOSC=INTOSC ]
 "50
@@ -10933,6 +10935,13 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;i2c_types.h: 52: i2c_operations_t i2c_returnReset(void *p);
 [; ;i2c_types.h: 53: i2c_operations_t i2c_restartWrite(void *p);
 [; ;i2c_types.h: 54: i2c_operations_t i2c_restartRead(void *p);
+[; ;i2c_simple_master.h: 29: uint8_t i2c_read1ByteRegister(i2c_address_t address, uint8_t reg);
+[; ;i2c_simple_master.h: 30: uint16_t i2c_read2ByteRegister(i2c_address_t address, uint8_t reg);
+[; ;i2c_simple_master.h: 31: void i2c_write1ByteRegister(i2c_address_t address, uint8_t reg, uint8_t data);
+[; ;i2c_simple_master.h: 32: void i2c_write2ByteRegister(i2c_address_t address, uint8_t reg, uint16_t data);
+[; ;i2c_simple_master.h: 34: void i2c_writeNBytes(i2c_address_t address, void* data, size_t len);
+[; ;i2c_simple_master.h: 35: void i2c_readDataBlock(i2c_address_t address, uint8_t reg, void *data, size_t len);
+[; ;i2c_simple_master.h: 36: void i2c_readNBytes(i2c_address_t address, void *data, size_t len);
 [; ;i2c_master.h: 31: typedef i2c_operations_t (*i2c_callback)(void *p);
 [; ;i2c_master.h: 35: i2c_error_t i2c_open(i2c_address_t address);
 [; ;i2c_master.h: 36: void i2c_setAddress(i2c_address_t address);
@@ -10949,13 +10958,6 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;i2c_master.h: 50: void i2c_setTimeOutCallback(i2c_callback cb, void *p);
 [; ;i2c_master.h: 53: void i2c_ISR(void);
 [; ;i2c_master.h: 54: void i2c_busCollisionISR(void);
-[; ;i2c_simple_master.h: 29: uint8_t i2c_read1ByteRegister(i2c_address_t address, uint8_t reg);
-[; ;i2c_simple_master.h: 30: uint16_t i2c_read2ByteRegister(i2c_address_t address, uint8_t reg);
-[; ;i2c_simple_master.h: 31: void i2c_write1ByteRegister(i2c_address_t address, uint8_t reg, uint8_t data);
-[; ;i2c_simple_master.h: 32: void i2c_write2ByteRegister(i2c_address_t address, uint8_t reg, uint16_t data);
-[; ;i2c_simple_master.h: 34: void i2c_writeNBytes(i2c_address_t address, void* data, size_t len);
-[; ;i2c_simple_master.h: 35: void i2c_readDataBlock(i2c_address_t address, uint8_t reg, void *data, size_t len);
-[; ;i2c_simple_master.h: 36: void i2c_readNBytes(i2c_address_t address, void *data, size_t len);
 [; ;mcc.h: 71: void SYSTEM_Initialize(void);
 [; ;mcc.h: 84: void OSCILLATOR_Initialize(void);
 "77 mcc_generated_files/mcc.c
@@ -10984,16 +10986,30 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;mcc.c: 84: {
 [e :U _OSCILLATOR_Initialize ]
 [f ]
-[; ;mcc.c: 86: OSCCON = 0x58;
+[; ;mcc.c: 86: OSCCON = 0x78;
 "86
-[e = _OSCCON -> -> 88 `i `uc ]
+[e = _OSCCON -> -> 120 `i `uc ]
 [; ;mcc.c: 88: OSCTUNE = 0x00;
 "88
 [e = _OSCTUNE -> -> 0 `i `uc ]
 [; ;mcc.c: 90: BORCON = 0x00;
 "90
 [e = _BORCON -> -> 0 `i `uc ]
-[; ;mcc.c: 91: }
-"91
+[; ;mcc.c: 92: while(PLLR == 0)
+"92
+[e $U 1214  ]
+[e :U 1215 ]
+[; ;mcc.c: 93: {
+"93
+{
+"94
+}
+[e :U 1214 ]
+"92
+[e $ == -> _PLLR `i -> 0 `i 1215  ]
+[e :U 1216 ]
+[; ;mcc.c: 94: }
+[; ;mcc.c: 95: }
+"95
 [e :UE 1213 ]
 }

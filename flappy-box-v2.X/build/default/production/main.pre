@@ -14849,6 +14849,16 @@ i2c_operations_t i2c_returnReset(void *p);
 i2c_operations_t i2c_restartWrite(void *p);
 i2c_operations_t i2c_restartRead(void *p);
 
+# 29 "mcc_generated_files/drivers/i2c_simple_master.h"
+uint8_t i2c_read1ByteRegister(i2c_address_t address, uint8_t reg);
+uint16_t i2c_read2ByteRegister(i2c_address_t address, uint8_t reg);
+void i2c_write1ByteRegister(i2c_address_t address, uint8_t reg, uint8_t data);
+void i2c_write2ByteRegister(i2c_address_t address, uint8_t reg, uint16_t data);
+
+void i2c_writeNBytes(i2c_address_t address, void* data, size_t len);
+void i2c_readDataBlock(i2c_address_t address, uint8_t reg, void *data, size_t len);
+void i2c_readNBytes(i2c_address_t address, void *data, size_t len);
+
 # 31 "mcc_generated_files/drivers/i2c_master.h"
 typedef i2c_operations_t (*i2c_callback)(void *p);
 
@@ -14875,86 +14885,169 @@ void i2c_setTimeOutCallback(i2c_callback cb, void *p);
 void i2c_ISR(void);
 void i2c_busCollisionISR(void);
 
-# 29 "mcc_generated_files/drivers/i2c_simple_master.h"
-uint8_t i2c_read1ByteRegister(i2c_address_t address, uint8_t reg);
-uint16_t i2c_read2ByteRegister(i2c_address_t address, uint8_t reg);
-void i2c_write1ByteRegister(i2c_address_t address, uint8_t reg, uint8_t data);
-void i2c_write2ByteRegister(i2c_address_t address, uint8_t reg, uint16_t data);
-
-void i2c_writeNBytes(i2c_address_t address, void* data, size_t len);
-void i2c_readDataBlock(i2c_address_t address, uint8_t reg, void *data, size_t len);
-void i2c_readNBytes(i2c_address_t address, void *data, size_t len);
-
 # 71 "mcc_generated_files/mcc.h"
 void SYSTEM_Initialize(void);
 
 # 84
 void OSCILLATOR_Initialize(void);
 
-# 49 "main.c"
-uint8_t writebuffer[17];
-uint16_t displaybuffer[8];
+# 7 "C:\Program Files (x86)\Microchip\xc8\v1.45\include\stdlib.h"
+typedef unsigned short wchar_t;
 
-# 57
+# 15
+typedef struct {
+int rem;
+int quot;
+} div_t;
+typedef struct {
+unsigned rem;
+unsigned quot;
+} udiv_t;
+typedef struct {
+long quot;
+long rem;
+} ldiv_t;
+typedef struct {
+unsigned long quot;
+unsigned long rem;
+} uldiv_t;
+
+# 53
+extern double atof(const char *);
+extern double strtod(const char *, const char **);
+extern int atoi(const char *);
+extern unsigned xtoi(const char *);
+extern long atol(const char *);
+extern long strtol(const char *, char **, int);
+
+extern int rand(void);
+extern void srand(unsigned int);
+extern void * calloc(size_t, size_t);
+extern div_t div(int numer, int denom);
+extern udiv_t udiv(unsigned numer, unsigned denom);
+extern ldiv_t ldiv(long numer, long denom);
+extern uldiv_t uldiv(unsigned long numer,unsigned long denom);
+extern unsigned long _lrotl(unsigned long value, unsigned int shift);
+extern unsigned long _lrotr(unsigned long value, unsigned int shift);
+extern unsigned int _rotl(unsigned int value, unsigned int shift);
+extern unsigned int _rotr(unsigned int value, unsigned int shift);
+
+
+
+
+extern void * malloc(size_t);
+extern void free(void *);
+extern void * realloc(void *, size_t);
+
+# 86
+extern int atexit(void (*)(void));
+extern char * getenv(const char *);
+extern char ** environ;
+extern int system(char *);
+extern void qsort(void *, size_t, size_t, int (*)(const void *, const void *));
+extern void * bsearch(const void *, void *, size_t, size_t, int(*)(const void *, const void *));
+extern int abs(int);
+extern long labs(long);
+
+extern char * itoa(char * buf, int val, int base);
+extern char * utoa(char * buf, unsigned val, int base);
+
+
+
+
+extern char * ltoa(char * buf, long val, int base);
+extern char * ultoa(char * buf, unsigned long val, int base);
+
+extern char * ftoa(float f, int * status);
+
+# 50 "main.c"
+uint8_t writebuffer[17];
+uint16_t pixelbuffer[8];
+
+uint8_t walls[8];
+uint8_t createWall = 0;
+uint8_t elevation = 0;
+uint16_t score = 0;
+uint16_t hiscore = 0;
+bool fall = 1;
+bool start = 0;
+uint8_t gravityCounter = 0;
+uint16_t shiftCounter = 0;
+
+# 68
 void writeDisplay() {
 writebuffer[0] = 0;
 for (uint8_t i = 1; i < 17; i += 2) {
-writebuffer[i] = displaybuffer[i/2] & 0xFF;
-writebuffer[i + 1] = displaybuffer[i/2] >> 8;
+writebuffer[i] = pixelbuffer[i/2] & 0xFF;
+writebuffer[i + 1] = pixelbuffer[i/2] >> 8;
 }
 i2c_writeNBytes(0x70, writebuffer, 17);
 }
 
 void drawPixel(uint8_t x, uint8_t y, uint8_t color) {
 if (color == 1) {
-displaybuffer[y] |= 1 << x;
-displaybuffer[y] &= ~(1 << (x + 8));
+pixelbuffer[y] |= 1 << x;
+pixelbuffer[y] &= ~(1 << (x + 8));
 } else if (color == 2) {
-displaybuffer[y] |= 1 << (x + 8);
-displaybuffer[y] &= ~(1 << x);
+pixelbuffer[y] |= 1 << (x + 8);
+pixelbuffer[y] &= ~(1 << x);
 } else if (color == 3) {
-displaybuffer[y] |= (1 << (x + 8)) | (1 << x);
+pixelbuffer[y] |= (1 << (x + 8)) | (1 << x);
 } else if (color == 0) {
-displaybuffer[y] &= ~(1 << x) & ~(1 << (x + 8));
+pixelbuffer[y] &= ~(1 << x) & ~(1 << (x + 8));
 }
+}
+
+void clearPixels() {
+for (int i = 0; i < 8; i++) {
+pixelbuffer[i] = 0;
+}
+}
+
+void initializeDisplay() {
+for (uint8_t i = 0; i < 8; i++) {
+pixelbuffer[i] = 0;
+}
+for (uint8_t i = 0; i < 8; i++) {
+writebuffer[i] = 0;
+}
+
+writebuffer[0] = 0x21;
+i2c_writeNBytes(0x70, writebuffer, 1);
+
+
+writebuffer[0] = 0x80 | 0x01;
+i2c_writeNBytes(0x70, writebuffer, 1);
 }
 
 void main(void)
 {
-
 SYSTEM_Initialize();
-
-# 89
 (INTCONbits.GIE = 1);
-
-
 (INTCONbits.PEIE = 1);
 
-for (uint8_t i = 0; i < 8; i++) {
-writebuffer[i] = 0;
-}
-writebuffer[0] = 0x21;
-i2c_writeNBytes(0x70, writebuffer, 1);
+initializeDisplay();
 
-for (uint8_t i = 0; i < 8; i++) {
-displaybuffer[i] = 0;
-}
+elevation = 3;
 
-writebuffer[0] = 0x80 | 0x01;
-i2c_writeNBytes(0x70, writebuffer, 1);
 
-uint16_t x = 0;
-uint16_t y = 0;
+
 while (1)
 {
-drawPixel(x, y, (x + y)%4);
-x += 1;
-if (x == 8) {
-x = 0;
-y += 1;
-}
+drawPixel(1, elevation, 3);
 writeDisplay();
-_delay((unsigned long)((300)*(1000000/4000.0)));
+clearPixels();
+if (gravityCounter >= 20) {
+if (fall) {
+elevation += 1;
+} else {
+elevation -= 1;
+fall = 1;
+}
+gravityCounter = 0;
+} else {
+gravityCounter++;
+}
 }
 }
 
