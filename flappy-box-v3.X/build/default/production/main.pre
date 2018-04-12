@@ -15091,6 +15091,8 @@ pixelbuffer[i] = 0xFF00;
 }
 writeDisplay();
 _delay((unsigned long)((200)*(32000000/4000.0)));
+clearPixels();
+writeDisplay();
 for (i = 0; i < 8; i++) {
 walls[i] = 0;
 }
@@ -15114,6 +15116,7 @@ initializeDisplay();
 IOCCF4_SetInterruptHandler(buttonInterrupt);
 
 elevation = 3;
+writeDisplay();
 
 while (!start);
 

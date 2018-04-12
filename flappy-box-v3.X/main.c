@@ -163,12 +163,16 @@ void buttonInterrupt() {
   }
 }
 
-void endGame() {
-    for (i = 0; i < 8; i++) {
-        pixelbuffer[i] = 0xFF00;
+void endGame(bool flash) {
+    if (flash) {
+        for (i = 0; i < 8; i++) {
+            pixelbuffer[i] = 0xFF00;
+        }
+        writeDisplay();
+        __delay_ms(200);
     }
+    clearPixels();
     writeDisplay();
-    __delay_ms(200);
     for (i = 0; i < 8; i++) {
         walls[i] = 0;
     }
@@ -191,7 +195,7 @@ void main(void)
     
     IOCCF4_SetInterruptHandler(buttonInterrupt);
     
-    elevation = 3;
+    endGame(false);
     
     while (!start);
     
@@ -202,7 +206,7 @@ void main(void)
         writeDisplay();
         clearPixels();
         if (elevation < 0 || elevation > 7 || (walls[elevation] & 0b01000000)) {
-            endGame();
+            endGame(true);
         }
         if (gravityCounter >= 80) {
             if (fall) {

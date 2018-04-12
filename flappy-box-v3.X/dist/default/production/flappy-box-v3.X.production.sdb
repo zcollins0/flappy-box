@@ -97,7 +97,7 @@ i2c_reset_link 5
 [v _buttonInterrupt buttonInterrupt `(v  1 e 1 0 ]
 "166
 [v _endGame endGame `(v  1 e 1 0 ]
-"184
+"186
 [v _main main `(v  1 e 1 0 ]
 "89 C:\Users\Zach\Documents\Classes\Embedded\flappy-box\flappy-box-v3.X\mcc_generated_files/drivers/i2c_master.c
 [v _i2c_setDataCompleteCallback i2c_setDataCompleteCallback `(v  1 e 1 0 ]
@@ -525,10 +525,10 @@ i2c_reset_link 5
 [v _fsmStateTable fsmStateTable `[16]*.37DC(E12337  1 e 32 0 ]
 "51 C:\Users\Zach\Documents\Classes\Embedded\flappy-box\flappy-box-v3.X\mcc_generated_files/pin_manager.c
 [v _IOCCF4_InterruptHandler IOCCF4_InterruptHandler `*.37(v  1 e 2 0 ]
-"184 C:\Users\Zach\Documents\Classes\Embedded\flappy-box\flappy-box-v3.X\main.c
+"186 C:\Users\Zach\Documents\Classes\Embedded\flappy-box\flappy-box-v3.X\main.c
 [v _main main `(v  1 e 1 0 ]
 {
-"225
+"228
 } 0
 "138
 [v _shiftWalls shiftWalls `(v  1 e 1 0 ]
@@ -578,7 +578,7 @@ i2c_reset_link 5
 "166
 [v _endGame endGame `(v  1 e 1 0 ]
 {
-"182
+"184
 } 0
 "70
 [v _writeDisplay writeDisplay `(v  1 e 1 0 ]
@@ -914,7 +914,12 @@ i2c_reset_link 5
 [v ___awdiv@dividend dividend `i  1 p 2 3 ]
 "42
 } 0
-"129 C:\Users\Zach\Documents\Classes\Embedded\flappy-box\flappy-box-v3.X\main.c
+"93 C:\Users\Zach\Documents\Classes\Embedded\flappy-box\flappy-box-v3.X\main.c
+[v _clearPixels clearPixels `(v  1 e 1 0 ]
+{
+"97
+} 0
+"129
 [v _drawWalls drawWalls `(v  1 e 1 0 ]
 {
 "133
@@ -936,11 +941,6 @@ i2c_reset_link 5
 [v drawPixel@color color `uc  1 p 1 2 ]
 [v drawPixel@x x `uc  1 a 1 9 ]
 "91
-} 0
-"93
-[v _clearPixels clearPixels `(v  1 e 1 0 ]
-{
-"97
 } 0
 "77 C:\Users\Zach\Documents\Classes\Embedded\flappy-box\flappy-box-v3.X\mcc_generated_files/mcc.c
 [v _SYSTEM_Initialize SYSTEM_Initialize `(v  1 e 1 0 ]
