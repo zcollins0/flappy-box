@@ -61,6 +61,7 @@ uint8_t gravityCounter = 0;
 uint16_t shiftCounter = 0;
 
 uint8_t i = 0;
+uint8_t wallColor = 1;
 
 #define OFF 0
 #define GREEN 1
@@ -170,6 +171,130 @@ uint8_t letter_r[8] = {
     0b00000000
 };
 
+uint8_t number_0[8] = {
+    0b00000000,
+    0b01111110,
+    0b01000010,
+    0b01000010,
+    0b01000010,
+    0b01000010,
+    0b01111110,
+    0b00000000
+};
+
+uint8_t number_1[8] = {
+    0b00000000,
+    0b01111000,
+    0b00011000,
+    0b00011000,
+    0b00011000,
+    0b00011000,
+    0b01111110,
+    0b00000000
+};
+
+uint8_t number_2[8] = {
+    0b00000000,
+    0b01111110,
+    0b00000010,
+    0b00000010,
+    0b01111110,
+    0b01000000,
+    0b01111110,
+    0b00000000
+
+};
+
+uint8_t number_3[8] = {
+    0b00000000,
+    0b01111110,
+    0b00000010,
+    0b00000010,
+    0b01111110,
+    0b00000010,
+    0b01111110,
+    0b00000000
+};
+
+uint8_t number_4[8] = {
+    0b00000000,
+    0b01000100,
+    0b01000100,
+    0b01000100,
+    0b01111110,
+    0b00000100,
+    0b00000100,
+    0b00000000
+};
+
+uint8_t number_5[8] = {
+    0b00000000,
+    0b01111110,
+    0b01000000,
+    0b01000000,
+    0b01111110,
+    0b00000010,
+    0b01111110,
+    0b00000000
+};
+
+uint8_t number_6[8] = {
+    0b00000000,
+    0b01111110,
+    0b01000000,
+    0b01111110,
+    0b01000010,
+    0b01000010,
+    0b01111110,
+    0b00000000
+};
+
+uint8_t number_7[8] = {
+    0b00000000,
+    0b01111110,
+    0b00000010,
+    0b00000010,
+    0b00000010,
+    0b00000010,
+    0b00000010,
+    0b00000000
+};
+
+uint8_t number_8[8] = {
+    0b00000000,
+    0b01111110,
+    0b01000010,
+    0b01000010,
+    0b01111110,
+    0b01000010,
+    0b01111110,
+    0b00000000
+};
+
+uint8_t number_9[8] = {
+    0b00000000,
+    0b01111110,
+    0b01000010,
+    0b01111110,
+    0b00000010,
+    0b00000010,
+    0b00000010,
+    0b00000000
+};
+
+uint8_t * numberTable[10] = {
+    number_0,
+    number_1,
+    number_2,
+    number_3,
+    number_4,
+    number_5,
+    number_6,
+    number_7,
+    number_8,
+    number_9
+};
+
 void writeDisplay() {
     writebuffer[0] = 0;
     for (i = 1; i < 17; i += 2) {
@@ -231,7 +356,13 @@ uint8_t reverse(uint8_t b) {
 
 void drawWalls() {
     for (i = 0; i < 8; i++) {
-        pixelbuffer[i] |= reverse(walls[i]);
+        if (wallColor == GREEN) {
+            pixelbuffer[i] |= reverse(walls[i]);
+        } else if (wallColor == RED) {
+            pixelbuffer[i] |= reverse(walls[i]) << 8;
+        } else {
+            pixelbuffer[i] |= reverse(walls[i]) << 8 | reverse(walls[i]);
+        }
     }
 }
 
@@ -267,6 +398,9 @@ void buttonInterrupt() {
 }
 
 void writeWord(uint8_t ** text, uint8_t len) {
+    for (i = 0; i < 8; i++) {
+        walls[i] = 0;
+    }
     for (uint8_t idx = 0; idx < len; idx++) {
         uint8_t shiftValue = idx % 8;
         for (uint8_t k = 0; k < 8; k++) {
@@ -281,7 +415,9 @@ void writeWord(uint8_t ** text, uint8_t len) {
 }
 
 void write(uint8_t selection) {
+    uint16_t number = 0;
     if (selection == NEW_HISCORE) {
+        wallColor = YELLOW;
         uint8_t * toWrite[5];
         toWrite[0] = letter_space;
         toWrite[1] = letter_n;
@@ -303,6 +439,7 @@ void write(uint8_t selection) {
         writeWord(toWrite, 56);
     }
     if (selection == PLAYERSUCKS) {
+        wallColor = RED;
         uint8_t * toWrite[7];
         toWrite[0] = letter_space;
         toWrite[1] = letter_s;
@@ -312,7 +449,38 @@ void write(uint8_t selection) {
         toWrite[5] = letter_e;
         toWrite[6] = letter_space;
         writeWord(toWrite, 48);
+        number = score;
+    } else {
+        number = hiscore;
     }
+    uint8_t digit1,digit2,digit3,digit4,digit5;
+    digit1 = (number/10000)%10;
+    digit2 = (number/1000)%10;
+    digit3 = (number/100)%10;
+    digit4 = (number/10)%10;
+    digit5 = number%10;
+    uint8_t * toWrite[7];
+    // i have no idea why, but we need to redefine space here
+    // otherwise it screws up the space display permanently
+    uint8_t letter_space[8] = {
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b00000000
+    };
+    toWrite[0] = letter_space;
+    toWrite[1] = numberTable[digit1];
+    toWrite[2] = numberTable[digit2];
+    toWrite[3] = numberTable[digit3];
+    toWrite[4] = numberTable[digit4];
+    toWrite[5] = numberTable[digit5];
+    toWrite[6] = letter_space;
+    writeWord(toWrite, 48);
+    wallColor = GREEN;
 }
 
 void endGame(bool played) {
@@ -322,6 +490,7 @@ void endGame(bool played) {
         }
         writeDisplay();
         __delay_ms(200);
+        clearPixels();
         if (score > hiscore) {
             hiscore = score;
             write(NEW_HISCORE);
