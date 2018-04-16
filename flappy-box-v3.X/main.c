@@ -16,7 +16,7 @@
         Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs - 1.65
         Device            :  PIC16F1619
         Driver Version    :  2.00
-*/
+ */
 
 /*
     (c) 2016 Microchip Technology Inc. and its subsidiaries. You may use this
@@ -38,7 +38,7 @@
 
     MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
     TERMS.
-*/
+ */
 
 #include "mcc_generated_files/mcc.h"
 #include <stdlib.h>
@@ -67,11 +67,114 @@ uint8_t i = 0;
 #define RED 2
 #define YELLOW 3
 
+#define NEW_HISCORE 10
+#define OLD_HISCORE 11
+#define PLAYERSUCKS 12
+
+uint8_t letter_space[8] = {
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b00000000
+};
+
+uint8_t letter_n[8] = {
+    0b00000000,
+    0b01000010,
+    0b01100010,
+    0b01010010,
+    0b01001010,
+    0b01000110,
+    0b01000010,
+    0b00000000
+};
+
+uint8_t letter_e[8] = {
+    0b00000000,
+    0b01111100,
+    0b01000000,
+    0b01110000,
+    0b01110000,
+    0b01000000,
+    0b01111100,
+    0b00000000
+};
+
+uint8_t letter_w[8] = {
+    0b00000000,
+    0b01000100,
+    0b01000100,
+    0b01010100,
+    0b01010100,
+    0b01010100,
+    0b01111100,
+    0b00000000
+};
+
+uint8_t letter_hi[8] = {
+    0b00000000,
+    0b01001010,
+    0b01001000,
+    0b01111010,
+    0b01111010,
+    0b01001010,
+    0b01001010,
+    0b00000000
+};
+
+uint8_t letter_s[8] = {
+    0b00000000,
+    0b01111110,
+    0b01000000,
+    0b01000000,
+    0b01111110,
+    0b00000010,
+    0b01111110,
+    0b00000000
+};
+
+uint8_t letter_c[8] = {
+    0b00000000,
+    0b01111110,
+    0b01100000,
+    0b01100000,
+    0b01100000,
+    0b01100000,
+    0b01111110,
+    0b00000000
+};
+
+uint8_t letter_o[8] = {
+    0b00000000,
+    0b01111110,
+    0b01000010,
+    0b01000010,
+    0b01000010,
+    0b01000010,
+    0b01111110,
+    0b00000000
+};
+
+uint8_t letter_r[8] = {
+    0b00000000,
+    0b01111000,
+    0b01001000,
+    0b01111000,
+    0b01100000,
+    0b01010000,
+    0b01001000,
+    0b00000000
+};
+
 void writeDisplay() {
     writebuffer[0] = 0;
     for (i = 1; i < 17; i += 2) {
-        writebuffer[i] = pixelbuffer[i/2] & 0xFF;
-        writebuffer[i + 1] = pixelbuffer[i/2] >> 8;
+        writebuffer[i] = pixelbuffer[i / 2] & 0xFF;
+        writebuffer[i + 1] = pixelbuffer[i / 2] >> 8;
     }
     i2c_writeNBytes(0x70, writebuffer, 17);
 }
@@ -109,21 +212,21 @@ void initializeDisplay() {
     // connect to display
     writebuffer[0] = 0x21;
     i2c_writeNBytes(0x70, writebuffer, 1);
-    
+
     // set blink rate to not blink
     writebuffer[0] = 0x80 | 0x01;
     i2c_writeNBytes(0x70, writebuffer, 1);
 }
 
 uint8_t random(uint8_t lower, uint8_t upper) {
-    return rand() % (upper-lower) + lower;
+    return rand() % (upper - lower) + lower;
 }
 
 uint8_t reverse(uint8_t b) {
-   b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
-   b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
-   b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
-   return b;
+    b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
+    b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
+    b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
+    return b;
 }
 
 void drawWalls() {
@@ -156,20 +259,77 @@ void shiftWalls() {
 }
 
 void buttonInterrupt() {
-  start = true;
-  fall = false;
-  if (gravityCounter < 255) {
-    gravityCounter = 255;
-  }
+    start = true;
+    fall = false;
+    if (gravityCounter < 255) {
+        gravityCounter = 255;
+    }
 }
 
-void endGame(bool flash) {
-    if (flash) {
+void writeWord(uint8_t ** text, uint8_t len) {
+    for (uint8_t idx = 0; idx < len; idx++) {
+        uint8_t shiftValue = idx % 8;
+        for (uint8_t k = 0; k < 8; k++) {
+            walls[k] = ((text[idx / 8][k]) << shiftValue) |
+                    ((text[idx / 8 + 1][k]) >> 8 - shiftValue);
+        }
+        clearPixels();
+        drawWalls();
+        writeDisplay();
+        __delay_ms(70);
+    }
+}
+
+void write(uint8_t selection) {
+    if (selection == NEW_HISCORE) {
+        uint8_t * toWrite[5];
+        toWrite[0] = letter_space;
+        toWrite[1] = letter_n;
+        toWrite[2] = letter_e;
+        toWrite[3] = letter_w;
+        toWrite[4] = letter_space;
+        writeWord(toWrite, 32);
+    }
+    if (selection == OLD_HISCORE || selection == NEW_HISCORE) {
+        uint8_t * toWrite[8];
+        toWrite[0] = letter_space;
+        toWrite[1] = letter_hi;
+        toWrite[2] = letter_s;
+        toWrite[3] = letter_c;
+        toWrite[4] = letter_o;
+        toWrite[5] = letter_r;
+        toWrite[6] = letter_e;
+        toWrite[7] = letter_space;
+        writeWord(toWrite, 56);
+    }
+    if (selection == PLAYERSUCKS) {
+        uint8_t * toWrite[7];
+        toWrite[0] = letter_space;
+        toWrite[1] = letter_s;
+        toWrite[2] = letter_c;
+        toWrite[3] = letter_o;
+        toWrite[4] = letter_r;
+        toWrite[5] = letter_e;
+        toWrite[6] = letter_space;
+        writeWord(toWrite, 48);
+    }
+}
+
+void endGame(bool played) {
+    if (played) {
         for (i = 0; i < 8; i++) {
             pixelbuffer[i] = 0xFF00;
         }
         writeDisplay();
         __delay_ms(200);
+        if (score > hiscore) {
+            hiscore = score;
+            write(NEW_HISCORE);
+        } else {
+            write(PLAYERSUCKS);
+        }
+    } else {
+        write(OLD_HISCORE);
     }
     clearPixels();
     writeDisplay();
@@ -185,22 +345,18 @@ void endGame(bool flash) {
     score = 0;
 }
 
-void main(void)
-{
+void main(void) {
     SYSTEM_Initialize();
     INTERRUPT_GlobalInterruptEnable();
     INTERRUPT_PeripheralInterruptEnable();
-    
+
     initializeDisplay();
-    
+
     IOCCF4_SetInterruptHandler(buttonInterrupt);
-    
+
     endGame(false);
-    
-    while (!start);
-    
-    while (1)
-    {
+
+    while (1) {
         drawPixel(1, elevation, YELLOW);
         drawWalls();
         writeDisplay();
@@ -229,4 +385,4 @@ void main(void)
 }
 /**
  End of File
-*/
+ */
