@@ -166,12 +166,12 @@ uint8_t letter_o[8] = {
 
 uint8_t letter_r[8] = {
     0b00000000,
-    0b01111000,
-    0b01001000,
-    0b01111000,
-    0b01100000,
-    0b01010000,
-    0b01001000,
+    0b01111100,
+    0b01000100,
+    0b01111100,
+    0b01110000,
+    0b01011000,
+    0b01001100,
     0b00000000
 };
 
@@ -416,7 +416,7 @@ void writeWord(uint8_t ** text, uint8_t len) {
         clearPixels();
         drawWalls();
         writeDisplay();
-        __delay_ms(70);
+        __delay_ms(60);
     }
 }
 
@@ -482,11 +482,11 @@ void write(uint8_t selection) {
         };
         toWrite[0] = letter_space;
         uint8_t writeCounter = 1;
-        for (uint8_t x = 0; x < 5; x++) {
-            if (digits[x] != 0) {
-                toWrite[writeCounter] = numberTable[digits[x]];
-                writeCounter++;
-            }
+        uint8_t x = 0;
+        while (digits[x] == 0 && x < 5) x++;
+        for (; x < 5; x++) {
+            toWrite[writeCounter] = numberTable[digits[x]];
+            writeCounter++;
         }
         if (writeCounter == 1) {
             toWrite[writeCounter] = numberTable[0];
