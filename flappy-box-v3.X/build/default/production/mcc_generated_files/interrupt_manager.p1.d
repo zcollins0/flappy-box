@@ -2,6 +2,7 @@
  build/default/production/mcc_generated_files/interrupt_manager.p1:  \
  mcc_generated_files/interrupt_manager.c  \
 mcc_generated_files/mcc.h  \
+mcc_generated_files/memory.h  \
 mcc_generated_files/drivers/i2c_types.h  \
 mcc_generated_files/i2c_driver.h  \
 mcc_generated_files/interrupt_manager.h  \

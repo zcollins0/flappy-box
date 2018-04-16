@@ -63,6 +63,9 @@ uint16_t shiftCounter = 0;
 uint8_t i = 0;
 uint8_t wallColor = 1;
 
+uint16_t hiscore_addr = 0x1F05;
+uint16_t zerobuf[ERASE_FLASH_BLOCKSIZE];
+
 #define OFF 0
 #define GREEN 1
 #define RED 2
@@ -493,6 +496,7 @@ void endGame(bool played) {
         clearPixels();
         if (score > hiscore) {
             hiscore = score;
+            FLASH_WriteWord(hiscore_addr, zerobuf, hiscore);
             write(NEW_HISCORE);
         } else {
             write(PLAYERSUCKS);
@@ -522,6 +526,12 @@ void main(void) {
     initializeDisplay();
 
     IOCCF4_SetInterruptHandler(buttonInterrupt);
+    
+    hiscore = FLASH_ReadWord(hiscore_addr);
+    if (hiscore == 16383) {
+        hiscore = 0;
+        FLASH_WriteWord(hiscore_addr, zerobuf, hiscore);
+    }
 
     endGame(false);
 

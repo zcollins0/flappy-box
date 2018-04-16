@@ -9,8 +9,10 @@ Version 3.2 HI-TECH Software Intermediate Code
 "153 C:\Program Files (x86)\Microchip\xc8\v1.45\include\pic.h
 [v __delay `JF11946 ~T0 @X0 0 e ]
 [p i __delay ]
+"127 mcc_generated_files/memory.h
+[v _FLASH_WriteWord `(v ~T0 @X0 0 ef3`ui`*ui`ui ]
 [p mainexit ]
-"71 mcc_generated_files/mcc.h
+"72 mcc_generated_files/mcc.h
 [v _SYSTEM_Initialize `(v ~T0 @X0 0 ef ]
 "355 C:\Program Files (x86)\Microchip\xc8\v1.45\include\pic16f1619.h
 [s S26 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
@@ -26,6 +28,8 @@ Version 3.2 HI-TECH Software Intermediate Code
 [v F11964 `(v ~T0 @X0 0 tf ]
 "177 mcc_generated_files/pin_manager.h
 [v _IOCCF4_SetInterruptHandler `(v ~T0 @X0 0 ef1`*F11964 ]
+"98 mcc_generated_files/memory.h
+[v _FLASH_ReadWord `(ui ~T0 @X0 0 ef1`ui ]
 [; ;htc.h: 26: extern const char __xc8_OPTIM_SPEED;
 [; ;htc.h: 28: extern double __fpnormalize(double);
 [; ;xc8debug.h: 14: extern void __builtin_software_breakpoint(void);
@@ -10893,6 +10897,10 @@ Version 3.2 HI-TECH Software Intermediate Code
 "76
 [v _i2c_driver_i2cISR `*F12172 ~T0 @X0 1 e ]
 [; ;i2c_driver.h: 76: void (*i2c_driver_i2cISR)(void);
+[; ;memory.h: 98: uint16_t FLASH_ReadWord(uint16_t flashAddr);
+[; ;memory.h: 127: void FLASH_WriteWord(uint16_t flashAddr, uint16_t *ramBuf, uint16_t word);
+[; ;memory.h: 163: int8_t FLASH_WriteBlock(uint16_t writeAddr, uint16_t *flashWordArray);
+[; ;memory.h: 188: void FLASH_EraseBlock(uint16_t startAddr);
 [; ;i2c_types.h: 29: typedef enum {
 [; ;i2c_types.h: 30: I2C_NOERR,
 [; ;i2c_types.h: 31: I2C_BUSY,
@@ -10912,13 +10920,6 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;i2c_types.h: 52: i2c_operations_t i2c_returnReset(void *p);
 [; ;i2c_types.h: 53: i2c_operations_t i2c_restartWrite(void *p);
 [; ;i2c_types.h: 54: i2c_operations_t i2c_restartRead(void *p);
-[; ;i2c_simple_master.h: 29: uint8_t i2c_read1ByteRegister(i2c_address_t address, uint8_t reg);
-[; ;i2c_simple_master.h: 30: uint16_t i2c_read2ByteRegister(i2c_address_t address, uint8_t reg);
-[; ;i2c_simple_master.h: 31: void i2c_write1ByteRegister(i2c_address_t address, uint8_t reg, uint8_t data);
-[; ;i2c_simple_master.h: 32: void i2c_write2ByteRegister(i2c_address_t address, uint8_t reg, uint16_t data);
-[; ;i2c_simple_master.h: 34: void i2c_writeNBytes(i2c_address_t address, void* data, size_t len);
-[; ;i2c_simple_master.h: 35: void i2c_readDataBlock(i2c_address_t address, uint8_t reg, void *data, size_t len);
-[; ;i2c_simple_master.h: 36: void i2c_readNBytes(i2c_address_t address, void *data, size_t len);
 [; ;i2c_master.h: 31: typedef i2c_operations_t (*i2c_callback)(void *p);
 [; ;i2c_master.h: 35: i2c_error_t i2c_open(i2c_address_t address);
 [; ;i2c_master.h: 36: void i2c_setAddress(i2c_address_t address);
@@ -10935,8 +10936,15 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;i2c_master.h: 50: void i2c_setTimeOutCallback(i2c_callback cb, void *p);
 [; ;i2c_master.h: 53: void i2c_ISR(void);
 [; ;i2c_master.h: 54: void i2c_busCollisionISR(void);
-[; ;mcc.h: 71: void SYSTEM_Initialize(void);
-[; ;mcc.h: 84: void OSCILLATOR_Initialize(void);
+[; ;i2c_simple_master.h: 29: uint8_t i2c_read1ByteRegister(i2c_address_t address, uint8_t reg);
+[; ;i2c_simple_master.h: 30: uint16_t i2c_read2ByteRegister(i2c_address_t address, uint8_t reg);
+[; ;i2c_simple_master.h: 31: void i2c_write1ByteRegister(i2c_address_t address, uint8_t reg, uint8_t data);
+[; ;i2c_simple_master.h: 32: void i2c_write2ByteRegister(i2c_address_t address, uint8_t reg, uint16_t data);
+[; ;i2c_simple_master.h: 34: void i2c_writeNBytes(i2c_address_t address, void* data, size_t len);
+[; ;i2c_simple_master.h: 35: void i2c_readDataBlock(i2c_address_t address, uint8_t reg, void *data, size_t len);
+[; ;i2c_simple_master.h: 36: void i2c_readNBytes(i2c_address_t address, void *data, size_t len);
+[; ;mcc.h: 72: void SYSTEM_Initialize(void);
+[; ;mcc.h: 85: void OSCILLATOR_Initialize(void);
 [; ;stdlib.h: 7: typedef unsigned short wchar_t;
 [; ;stdlib.h: 15: typedef struct {
 [; ;stdlib.h: 16: int rem;
@@ -11056,16 +11064,19 @@ Version 3.2 HI-TECH Software Intermediate Code
 -> -> 1 `i `uc
 ]
 [; ;main.c: 64: uint8_t wallColor = 1;
-"75
+"66
+[v _hiscore_addr `ui ~T0 @X0 1 e ]
+[i _hiscore_addr
+-> -> 7941 `i `ui
+]
+[; ;main.c: 66: uint16_t hiscore_addr = 0x1F05;
+"67
+[v _zerobuf `ui ~T0 @X0 -> 32 `i e ]
+[; ;main.c: 67: uint16_t zerobuf[32];
+"78
 [v _letter_space `uc ~T0 @X0 -> 8 `i e ]
 [i _letter_space
 :U ..
-"76
--> -> 0 `i `uc
-"77
--> -> 0 `i `uc
-"78
--> -> 0 `i `uc
 "79
 -> -> 0 `i `uc
 "80
@@ -11074,809 +11085,795 @@ Version 3.2 HI-TECH Software Intermediate Code
 -> -> 0 `i `uc
 "82
 -> -> 0 `i `uc
+"83
+-> -> 0 `i `uc
 "84
+-> -> 0 `i `uc
+"85
+-> -> 0 `i `uc
+"87
 -> -> 0 `i `uc
 ..
 ]
-[; ;main.c: 75: uint8_t letter_space[8] = {
-[; ;main.c: 76: 0b00000000,
-[; ;main.c: 77: 0b00000000,
-[; ;main.c: 78: 0b00000000,
+[; ;main.c: 78: uint8_t letter_space[8] = {
 [; ;main.c: 79: 0b00000000,
 [; ;main.c: 80: 0b00000000,
 [; ;main.c: 81: 0b00000000,
 [; ;main.c: 82: 0b00000000,
-[; ;main.c: 83: 0b00000000
-[; ;main.c: 84: };
-"86
+[; ;main.c: 83: 0b00000000,
+[; ;main.c: 84: 0b00000000,
+[; ;main.c: 85: 0b00000000,
+[; ;main.c: 86: 0b00000000
+[; ;main.c: 87: };
+"89
 [v _letter_n `uc ~T0 @X0 -> 8 `i e ]
 [i _letter_n
 :U ..
-"87
--> -> 0 `i `uc
-"88
--> -> 66 `i `uc
-"89
--> -> 98 `i `uc
 "90
--> -> 82 `i `uc
+-> -> 0 `i `uc
 "91
--> -> 74 `i `uc
-"92
--> -> 70 `i `uc
-"93
 -> -> 66 `i `uc
+"92
+-> -> 98 `i `uc
+"93
+-> -> 82 `i `uc
+"94
+-> -> 74 `i `uc
 "95
+-> -> 70 `i `uc
+"96
+-> -> 66 `i `uc
+"98
 -> -> 0 `i `uc
 ..
 ]
-[; ;main.c: 86: uint8_t letter_n[8] = {
-[; ;main.c: 87: 0b00000000,
-[; ;main.c: 88: 0b01000010,
-[; ;main.c: 89: 0b01100010,
-[; ;main.c: 90: 0b01010010,
-[; ;main.c: 91: 0b01001010,
-[; ;main.c: 92: 0b01000110,
-[; ;main.c: 93: 0b01000010,
-[; ;main.c: 94: 0b00000000
-[; ;main.c: 95: };
-"97
+[; ;main.c: 89: uint8_t letter_n[8] = {
+[; ;main.c: 90: 0b00000000,
+[; ;main.c: 91: 0b01000010,
+[; ;main.c: 92: 0b01100010,
+[; ;main.c: 93: 0b01010010,
+[; ;main.c: 94: 0b01001010,
+[; ;main.c: 95: 0b01000110,
+[; ;main.c: 96: 0b01000010,
+[; ;main.c: 97: 0b00000000
+[; ;main.c: 98: };
+"100
 [v _letter_e `uc ~T0 @X0 -> 8 `i e ]
 [i _letter_e
 :U ..
-"98
--> -> 0 `i `uc
-"99
--> -> 124 `i `uc
-"100
--> -> 64 `i `uc
 "101
--> -> 112 `i `uc
+-> -> 0 `i `uc
 "102
--> -> 112 `i `uc
+-> -> 124 `i `uc
 "103
 -> -> 64 `i `uc
 "104
--> -> 124 `i `uc
+-> -> 112 `i `uc
+"105
+-> -> 112 `i `uc
 "106
+-> -> 64 `i `uc
+"107
+-> -> 124 `i `uc
+"109
 -> -> 0 `i `uc
 ..
 ]
-[; ;main.c: 97: uint8_t letter_e[8] = {
-[; ;main.c: 98: 0b00000000,
-[; ;main.c: 99: 0b01111100,
-[; ;main.c: 100: 0b01000000,
-[; ;main.c: 101: 0b01110000,
-[; ;main.c: 102: 0b01110000,
+[; ;main.c: 100: uint8_t letter_e[8] = {
+[; ;main.c: 101: 0b00000000,
+[; ;main.c: 102: 0b01111100,
 [; ;main.c: 103: 0b01000000,
-[; ;main.c: 104: 0b01111100,
-[; ;main.c: 105: 0b00000000
-[; ;main.c: 106: };
-"108
+[; ;main.c: 104: 0b01110000,
+[; ;main.c: 105: 0b01110000,
+[; ;main.c: 106: 0b01000000,
+[; ;main.c: 107: 0b01111100,
+[; ;main.c: 108: 0b00000000
+[; ;main.c: 109: };
+"111
 [v _letter_w `uc ~T0 @X0 -> 8 `i e ]
 [i _letter_w
 :U ..
-"109
--> -> 0 `i `uc
-"110
--> -> 68 `i `uc
-"111
--> -> 68 `i `uc
 "112
--> -> 84 `i `uc
+-> -> 0 `i `uc
 "113
--> -> 84 `i `uc
+-> -> 68 `i `uc
 "114
--> -> 84 `i `uc
+-> -> 68 `i `uc
 "115
--> -> 124 `i `uc
+-> -> 84 `i `uc
+"116
+-> -> 84 `i `uc
 "117
+-> -> 84 `i `uc
+"118
+-> -> 124 `i `uc
+"120
 -> -> 0 `i `uc
 ..
 ]
-[; ;main.c: 108: uint8_t letter_w[8] = {
-[; ;main.c: 109: 0b00000000,
-[; ;main.c: 110: 0b01000100,
-[; ;main.c: 111: 0b01000100,
-[; ;main.c: 112: 0b01010100,
-[; ;main.c: 113: 0b01010100,
-[; ;main.c: 114: 0b01010100,
-[; ;main.c: 115: 0b01111100,
-[; ;main.c: 116: 0b00000000
-[; ;main.c: 117: };
-"119
+[; ;main.c: 111: uint8_t letter_w[8] = {
+[; ;main.c: 112: 0b00000000,
+[; ;main.c: 113: 0b01000100,
+[; ;main.c: 114: 0b01000100,
+[; ;main.c: 115: 0b01010100,
+[; ;main.c: 116: 0b01010100,
+[; ;main.c: 117: 0b01010100,
+[; ;main.c: 118: 0b01111100,
+[; ;main.c: 119: 0b00000000
+[; ;main.c: 120: };
+"122
 [v _letter_hi `uc ~T0 @X0 -> 8 `i e ]
 [i _letter_hi
 :U ..
-"120
--> -> 0 `i `uc
-"121
--> -> 74 `i `uc
-"122
--> -> 72 `i `uc
 "123
--> -> 122 `i `uc
+-> -> 0 `i `uc
 "124
--> -> 122 `i `uc
+-> -> 74 `i `uc
 "125
--> -> 74 `i `uc
+-> -> 72 `i `uc
 "126
--> -> 74 `i `uc
+-> -> 122 `i `uc
+"127
+-> -> 122 `i `uc
 "128
+-> -> 74 `i `uc
+"129
+-> -> 74 `i `uc
+"131
 -> -> 0 `i `uc
 ..
 ]
-[; ;main.c: 119: uint8_t letter_hi[8] = {
-[; ;main.c: 120: 0b00000000,
-[; ;main.c: 121: 0b01001010,
-[; ;main.c: 122: 0b01001000,
-[; ;main.c: 123: 0b01111010,
-[; ;main.c: 124: 0b01111010,
-[; ;main.c: 125: 0b01001010,
-[; ;main.c: 126: 0b01001010,
-[; ;main.c: 127: 0b00000000
-[; ;main.c: 128: };
-"130
+[; ;main.c: 122: uint8_t letter_hi[8] = {
+[; ;main.c: 123: 0b00000000,
+[; ;main.c: 124: 0b01001010,
+[; ;main.c: 125: 0b01001000,
+[; ;main.c: 126: 0b01111010,
+[; ;main.c: 127: 0b01111010,
+[; ;main.c: 128: 0b01001010,
+[; ;main.c: 129: 0b01001010,
+[; ;main.c: 130: 0b00000000
+[; ;main.c: 131: };
+"133
 [v _letter_s `uc ~T0 @X0 -> 8 `i e ]
 [i _letter_s
 :U ..
-"131
--> -> 0 `i `uc
-"132
--> -> 126 `i `uc
-"133
--> -> 64 `i `uc
 "134
--> -> 64 `i `uc
+-> -> 0 `i `uc
 "135
 -> -> 126 `i `uc
 "136
--> -> 2 `i `uc
+-> -> 64 `i `uc
 "137
+-> -> 64 `i `uc
+"138
 -> -> 126 `i `uc
 "139
+-> -> 2 `i `uc
+"140
+-> -> 126 `i `uc
+"142
 -> -> 0 `i `uc
 ..
 ]
-[; ;main.c: 130: uint8_t letter_s[8] = {
-[; ;main.c: 131: 0b00000000,
-[; ;main.c: 132: 0b01111110,
-[; ;main.c: 133: 0b01000000,
-[; ;main.c: 134: 0b01000000,
+[; ;main.c: 133: uint8_t letter_s[8] = {
+[; ;main.c: 134: 0b00000000,
 [; ;main.c: 135: 0b01111110,
-[; ;main.c: 136: 0b00000010,
-[; ;main.c: 137: 0b01111110,
-[; ;main.c: 138: 0b00000000
-[; ;main.c: 139: };
-"141
+[; ;main.c: 136: 0b01000000,
+[; ;main.c: 137: 0b01000000,
+[; ;main.c: 138: 0b01111110,
+[; ;main.c: 139: 0b00000010,
+[; ;main.c: 140: 0b01111110,
+[; ;main.c: 141: 0b00000000
+[; ;main.c: 142: };
+"144
 [v _letter_c `uc ~T0 @X0 -> 8 `i e ]
 [i _letter_c
 :U ..
-"142
--> -> 0 `i `uc
-"143
--> -> 126 `i `uc
-"144
--> -> 96 `i `uc
 "145
--> -> 96 `i `uc
+-> -> 0 `i `uc
 "146
--> -> 96 `i `uc
+-> -> 126 `i `uc
 "147
 -> -> 96 `i `uc
 "148
--> -> 126 `i `uc
+-> -> 96 `i `uc
+"149
+-> -> 96 `i `uc
 "150
+-> -> 96 `i `uc
+"151
+-> -> 126 `i `uc
+"153
 -> -> 0 `i `uc
 ..
 ]
-[; ;main.c: 141: uint8_t letter_c[8] = {
-[; ;main.c: 142: 0b00000000,
-[; ;main.c: 143: 0b01111110,
-[; ;main.c: 144: 0b01100000,
-[; ;main.c: 145: 0b01100000,
-[; ;main.c: 146: 0b01100000,
+[; ;main.c: 144: uint8_t letter_c[8] = {
+[; ;main.c: 145: 0b00000000,
+[; ;main.c: 146: 0b01111110,
 [; ;main.c: 147: 0b01100000,
-[; ;main.c: 148: 0b01111110,
-[; ;main.c: 149: 0b00000000
-[; ;main.c: 150: };
-"152
+[; ;main.c: 148: 0b01100000,
+[; ;main.c: 149: 0b01100000,
+[; ;main.c: 150: 0b01100000,
+[; ;main.c: 151: 0b01111110,
+[; ;main.c: 152: 0b00000000
+[; ;main.c: 153: };
+"155
 [v _letter_o `uc ~T0 @X0 -> 8 `i e ]
 [i _letter_o
 :U ..
-"153
--> -> 0 `i `uc
-"154
--> -> 126 `i `uc
-"155
--> -> 66 `i `uc
 "156
--> -> 66 `i `uc
+-> -> 0 `i `uc
 "157
--> -> 66 `i `uc
+-> -> 126 `i `uc
 "158
 -> -> 66 `i `uc
 "159
--> -> 126 `i `uc
+-> -> 66 `i `uc
+"160
+-> -> 66 `i `uc
 "161
+-> -> 66 `i `uc
+"162
+-> -> 126 `i `uc
+"164
 -> -> 0 `i `uc
 ..
 ]
-[; ;main.c: 152: uint8_t letter_o[8] = {
-[; ;main.c: 153: 0b00000000,
-[; ;main.c: 154: 0b01111110,
-[; ;main.c: 155: 0b01000010,
-[; ;main.c: 156: 0b01000010,
-[; ;main.c: 157: 0b01000010,
+[; ;main.c: 155: uint8_t letter_o[8] = {
+[; ;main.c: 156: 0b00000000,
+[; ;main.c: 157: 0b01111110,
 [; ;main.c: 158: 0b01000010,
-[; ;main.c: 159: 0b01111110,
-[; ;main.c: 160: 0b00000000
-[; ;main.c: 161: };
-"163
+[; ;main.c: 159: 0b01000010,
+[; ;main.c: 160: 0b01000010,
+[; ;main.c: 161: 0b01000010,
+[; ;main.c: 162: 0b01111110,
+[; ;main.c: 163: 0b00000000
+[; ;main.c: 164: };
+"166
 [v _letter_r `uc ~T0 @X0 -> 8 `i e ]
 [i _letter_r
 :U ..
-"164
--> -> 0 `i `uc
-"165
--> -> 120 `i `uc
-"166
--> -> 72 `i `uc
 "167
--> -> 120 `i `uc
+-> -> 0 `i `uc
 "168
--> -> 96 `i `uc
+-> -> 120 `i `uc
 "169
--> -> 80 `i `uc
-"170
 -> -> 72 `i `uc
+"170
+-> -> 120 `i `uc
+"171
+-> -> 96 `i `uc
 "172
+-> -> 80 `i `uc
+"173
+-> -> 72 `i `uc
+"175
 -> -> 0 `i `uc
 ..
 ]
-[; ;main.c: 163: uint8_t letter_r[8] = {
-[; ;main.c: 164: 0b00000000,
-[; ;main.c: 165: 0b01111000,
-[; ;main.c: 166: 0b01001000,
-[; ;main.c: 167: 0b01111000,
-[; ;main.c: 168: 0b01100000,
-[; ;main.c: 169: 0b01010000,
-[; ;main.c: 170: 0b01001000,
-[; ;main.c: 171: 0b00000000
-[; ;main.c: 172: };
-"174
+[; ;main.c: 166: uint8_t letter_r[8] = {
+[; ;main.c: 167: 0b00000000,
+[; ;main.c: 168: 0b01111000,
+[; ;main.c: 169: 0b01001000,
+[; ;main.c: 170: 0b01111000,
+[; ;main.c: 171: 0b01100000,
+[; ;main.c: 172: 0b01010000,
+[; ;main.c: 173: 0b01001000,
+[; ;main.c: 174: 0b00000000
+[; ;main.c: 175: };
+"177
 [v _number_0 `uc ~T0 @X0 -> 8 `i e ]
 [i _number_0
 :U ..
-"175
--> -> 0 `i `uc
-"176
--> -> 126 `i `uc
-"177
--> -> 66 `i `uc
 "178
--> -> 66 `i `uc
+-> -> 0 `i `uc
 "179
--> -> 66 `i `uc
+-> -> 126 `i `uc
 "180
 -> -> 66 `i `uc
 "181
--> -> 126 `i `uc
+-> -> 66 `i `uc
+"182
+-> -> 66 `i `uc
 "183
+-> -> 66 `i `uc
+"184
+-> -> 126 `i `uc
+"186
 -> -> 0 `i `uc
 ..
 ]
-[; ;main.c: 174: uint8_t number_0[8] = {
-[; ;main.c: 175: 0b00000000,
-[; ;main.c: 176: 0b01111110,
-[; ;main.c: 177: 0b01000010,
-[; ;main.c: 178: 0b01000010,
-[; ;main.c: 179: 0b01000010,
+[; ;main.c: 177: uint8_t number_0[8] = {
+[; ;main.c: 178: 0b00000000,
+[; ;main.c: 179: 0b01111110,
 [; ;main.c: 180: 0b01000010,
-[; ;main.c: 181: 0b01111110,
-[; ;main.c: 182: 0b00000000
-[; ;main.c: 183: };
-"185
+[; ;main.c: 181: 0b01000010,
+[; ;main.c: 182: 0b01000010,
+[; ;main.c: 183: 0b01000010,
+[; ;main.c: 184: 0b01111110,
+[; ;main.c: 185: 0b00000000
+[; ;main.c: 186: };
+"188
 [v _number_1 `uc ~T0 @X0 -> 8 `i e ]
 [i _number_1
 :U ..
-"186
--> -> 0 `i `uc
-"187
--> -> 120 `i `uc
-"188
--> -> 24 `i `uc
 "189
--> -> 24 `i `uc
+-> -> 0 `i `uc
 "190
--> -> 24 `i `uc
+-> -> 120 `i `uc
 "191
 -> -> 24 `i `uc
 "192
--> -> 126 `i `uc
+-> -> 24 `i `uc
+"193
+-> -> 24 `i `uc
 "194
+-> -> 24 `i `uc
+"195
+-> -> 126 `i `uc
+"197
 -> -> 0 `i `uc
 ..
 ]
-[; ;main.c: 185: uint8_t number_1[8] = {
-[; ;main.c: 186: 0b00000000,
-[; ;main.c: 187: 0b01111000,
-[; ;main.c: 188: 0b00011000,
-[; ;main.c: 189: 0b00011000,
-[; ;main.c: 190: 0b00011000,
+[; ;main.c: 188: uint8_t number_1[8] = {
+[; ;main.c: 189: 0b00000000,
+[; ;main.c: 190: 0b01111000,
 [; ;main.c: 191: 0b00011000,
-[; ;main.c: 192: 0b01111110,
-[; ;main.c: 193: 0b00000000
-[; ;main.c: 194: };
-"196
+[; ;main.c: 192: 0b00011000,
+[; ;main.c: 193: 0b00011000,
+[; ;main.c: 194: 0b00011000,
+[; ;main.c: 195: 0b01111110,
+[; ;main.c: 196: 0b00000000
+[; ;main.c: 197: };
+"199
 [v _number_2 `uc ~T0 @X0 -> 8 `i e ]
 [i _number_2
 :U ..
-"197
--> -> 0 `i `uc
-"198
--> -> 126 `i `uc
-"199
--> -> 2 `i `uc
 "200
--> -> 2 `i `uc
+-> -> 0 `i `uc
 "201
 -> -> 126 `i `uc
 "202
--> -> 64 `i `uc
+-> -> 2 `i `uc
 "203
+-> -> 2 `i `uc
+"204
 -> -> 126 `i `uc
+"205
+-> -> 64 `i `uc
 "206
+-> -> 126 `i `uc
+"209
 -> -> 0 `i `uc
 ..
 ]
-[; ;main.c: 196: uint8_t number_2[8] = {
-[; ;main.c: 197: 0b00000000,
-[; ;main.c: 198: 0b01111110,
-[; ;main.c: 199: 0b00000010,
-[; ;main.c: 200: 0b00000010,
+[; ;main.c: 199: uint8_t number_2[8] = {
+[; ;main.c: 200: 0b00000000,
 [; ;main.c: 201: 0b01111110,
-[; ;main.c: 202: 0b01000000,
-[; ;main.c: 203: 0b01111110,
-[; ;main.c: 204: 0b00000000
-[; ;main.c: 206: };
-"208
+[; ;main.c: 202: 0b00000010,
+[; ;main.c: 203: 0b00000010,
+[; ;main.c: 204: 0b01111110,
+[; ;main.c: 205: 0b01000000,
+[; ;main.c: 206: 0b01111110,
+[; ;main.c: 207: 0b00000000
+[; ;main.c: 209: };
+"211
 [v _number_3 `uc ~T0 @X0 -> 8 `i e ]
 [i _number_3
 :U ..
-"209
--> -> 0 `i `uc
-"210
--> -> 126 `i `uc
-"211
--> -> 2 `i `uc
 "212
--> -> 2 `i `uc
+-> -> 0 `i `uc
 "213
 -> -> 126 `i `uc
 "214
 -> -> 2 `i `uc
 "215
+-> -> 2 `i `uc
+"216
 -> -> 126 `i `uc
 "217
+-> -> 2 `i `uc
+"218
+-> -> 126 `i `uc
+"220
 -> -> 0 `i `uc
 ..
 ]
-[; ;main.c: 208: uint8_t number_3[8] = {
-[; ;main.c: 209: 0b00000000,
-[; ;main.c: 210: 0b01111110,
-[; ;main.c: 211: 0b00000010,
-[; ;main.c: 212: 0b00000010,
+[; ;main.c: 211: uint8_t number_3[8] = {
+[; ;main.c: 212: 0b00000000,
 [; ;main.c: 213: 0b01111110,
 [; ;main.c: 214: 0b00000010,
-[; ;main.c: 215: 0b01111110,
-[; ;main.c: 216: 0b00000000
-[; ;main.c: 217: };
-"219
+[; ;main.c: 215: 0b00000010,
+[; ;main.c: 216: 0b01111110,
+[; ;main.c: 217: 0b00000010,
+[; ;main.c: 218: 0b01111110,
+[; ;main.c: 219: 0b00000000
+[; ;main.c: 220: };
+"222
 [v _number_4 `uc ~T0 @X0 -> 8 `i e ]
 [i _number_4
 :U ..
-"220
--> -> 0 `i `uc
-"221
--> -> 68 `i `uc
-"222
--> -> 68 `i `uc
 "223
--> -> 68 `i `uc
+-> -> 0 `i `uc
 "224
--> -> 126 `i `uc
+-> -> 68 `i `uc
 "225
--> -> 4 `i `uc
+-> -> 68 `i `uc
 "226
--> -> 4 `i `uc
+-> -> 68 `i `uc
+"227
+-> -> 126 `i `uc
 "228
+-> -> 4 `i `uc
+"229
+-> -> 4 `i `uc
+"231
 -> -> 0 `i `uc
 ..
 ]
-[; ;main.c: 219: uint8_t number_4[8] = {
-[; ;main.c: 220: 0b00000000,
-[; ;main.c: 221: 0b01000100,
-[; ;main.c: 222: 0b01000100,
-[; ;main.c: 223: 0b01000100,
-[; ;main.c: 224: 0b01111110,
-[; ;main.c: 225: 0b00000100,
-[; ;main.c: 226: 0b00000100,
-[; ;main.c: 227: 0b00000000
-[; ;main.c: 228: };
-"230
+[; ;main.c: 222: uint8_t number_4[8] = {
+[; ;main.c: 223: 0b00000000,
+[; ;main.c: 224: 0b01000100,
+[; ;main.c: 225: 0b01000100,
+[; ;main.c: 226: 0b01000100,
+[; ;main.c: 227: 0b01111110,
+[; ;main.c: 228: 0b00000100,
+[; ;main.c: 229: 0b00000100,
+[; ;main.c: 230: 0b00000000
+[; ;main.c: 231: };
+"233
 [v _number_5 `uc ~T0 @X0 -> 8 `i e ]
 [i _number_5
 :U ..
-"231
--> -> 0 `i `uc
-"232
--> -> 126 `i `uc
-"233
--> -> 64 `i `uc
 "234
--> -> 64 `i `uc
+-> -> 0 `i `uc
 "235
 -> -> 126 `i `uc
 "236
--> -> 2 `i `uc
+-> -> 64 `i `uc
 "237
+-> -> 64 `i `uc
+"238
 -> -> 126 `i `uc
 "239
+-> -> 2 `i `uc
+"240
+-> -> 126 `i `uc
+"242
 -> -> 0 `i `uc
 ..
 ]
-[; ;main.c: 230: uint8_t number_5[8] = {
-[; ;main.c: 231: 0b00000000,
-[; ;main.c: 232: 0b01111110,
-[; ;main.c: 233: 0b01000000,
-[; ;main.c: 234: 0b01000000,
+[; ;main.c: 233: uint8_t number_5[8] = {
+[; ;main.c: 234: 0b00000000,
 [; ;main.c: 235: 0b01111110,
-[; ;main.c: 236: 0b00000010,
-[; ;main.c: 237: 0b01111110,
-[; ;main.c: 238: 0b00000000
-[; ;main.c: 239: };
-"241
+[; ;main.c: 236: 0b01000000,
+[; ;main.c: 237: 0b01000000,
+[; ;main.c: 238: 0b01111110,
+[; ;main.c: 239: 0b00000010,
+[; ;main.c: 240: 0b01111110,
+[; ;main.c: 241: 0b00000000
+[; ;main.c: 242: };
+"244
 [v _number_6 `uc ~T0 @X0 -> 8 `i e ]
 [i _number_6
 :U ..
-"242
--> -> 0 `i `uc
-"243
--> -> 126 `i `uc
-"244
--> -> 64 `i `uc
 "245
--> -> 126 `i `uc
+-> -> 0 `i `uc
 "246
--> -> 66 `i `uc
+-> -> 126 `i `uc
 "247
--> -> 66 `i `uc
+-> -> 64 `i `uc
 "248
 -> -> 126 `i `uc
+"249
+-> -> 66 `i `uc
 "250
+-> -> 66 `i `uc
+"251
+-> -> 126 `i `uc
+"253
 -> -> 0 `i `uc
 ..
 ]
-[; ;main.c: 241: uint8_t number_6[8] = {
-[; ;main.c: 242: 0b00000000,
-[; ;main.c: 243: 0b01111110,
-[; ;main.c: 244: 0b01000000,
-[; ;main.c: 245: 0b01111110,
-[; ;main.c: 246: 0b01000010,
-[; ;main.c: 247: 0b01000010,
+[; ;main.c: 244: uint8_t number_6[8] = {
+[; ;main.c: 245: 0b00000000,
+[; ;main.c: 246: 0b01111110,
+[; ;main.c: 247: 0b01000000,
 [; ;main.c: 248: 0b01111110,
-[; ;main.c: 249: 0b00000000
-[; ;main.c: 250: };
-"252
+[; ;main.c: 249: 0b01000010,
+[; ;main.c: 250: 0b01000010,
+[; ;main.c: 251: 0b01111110,
+[; ;main.c: 252: 0b00000000
+[; ;main.c: 253: };
+"255
 [v _number_7 `uc ~T0 @X0 -> 8 `i e ]
 [i _number_7
 :U ..
-"253
--> -> 0 `i `uc
-"254
--> -> 126 `i `uc
-"255
--> -> 2 `i `uc
 "256
--> -> 2 `i `uc
+-> -> 0 `i `uc
 "257
--> -> 2 `i `uc
+-> -> 126 `i `uc
 "258
 -> -> 2 `i `uc
 "259
 -> -> 2 `i `uc
+"260
+-> -> 2 `i `uc
 "261
+-> -> 2 `i `uc
+"262
+-> -> 2 `i `uc
+"264
 -> -> 0 `i `uc
 ..
 ]
-[; ;main.c: 252: uint8_t number_7[8] = {
-[; ;main.c: 253: 0b00000000,
-[; ;main.c: 254: 0b01111110,
-[; ;main.c: 255: 0b00000010,
-[; ;main.c: 256: 0b00000010,
-[; ;main.c: 257: 0b00000010,
+[; ;main.c: 255: uint8_t number_7[8] = {
+[; ;main.c: 256: 0b00000000,
+[; ;main.c: 257: 0b01111110,
 [; ;main.c: 258: 0b00000010,
 [; ;main.c: 259: 0b00000010,
-[; ;main.c: 260: 0b00000000
-[; ;main.c: 261: };
-"263
+[; ;main.c: 260: 0b00000010,
+[; ;main.c: 261: 0b00000010,
+[; ;main.c: 262: 0b00000010,
+[; ;main.c: 263: 0b00000000
+[; ;main.c: 264: };
+"266
 [v _number_8 `uc ~T0 @X0 -> 8 `i e ]
 [i _number_8
 :U ..
-"264
--> -> 0 `i `uc
-"265
--> -> 126 `i `uc
-"266
--> -> 66 `i `uc
 "267
--> -> 66 `i `uc
+-> -> 0 `i `uc
 "268
 -> -> 126 `i `uc
 "269
 -> -> 66 `i `uc
 "270
+-> -> 66 `i `uc
+"271
 -> -> 126 `i `uc
 "272
+-> -> 66 `i `uc
+"273
+-> -> 126 `i `uc
+"275
 -> -> 0 `i `uc
 ..
 ]
-[; ;main.c: 263: uint8_t number_8[8] = {
-[; ;main.c: 264: 0b00000000,
-[; ;main.c: 265: 0b01111110,
-[; ;main.c: 266: 0b01000010,
-[; ;main.c: 267: 0b01000010,
+[; ;main.c: 266: uint8_t number_8[8] = {
+[; ;main.c: 267: 0b00000000,
 [; ;main.c: 268: 0b01111110,
 [; ;main.c: 269: 0b01000010,
-[; ;main.c: 270: 0b01111110,
-[; ;main.c: 271: 0b00000000
-[; ;main.c: 272: };
-"274
+[; ;main.c: 270: 0b01000010,
+[; ;main.c: 271: 0b01111110,
+[; ;main.c: 272: 0b01000010,
+[; ;main.c: 273: 0b01111110,
+[; ;main.c: 274: 0b00000000
+[; ;main.c: 275: };
+"277
 [v _number_9 `uc ~T0 @X0 -> 8 `i e ]
 [i _number_9
 :U ..
-"275
--> -> 0 `i `uc
-"276
--> -> 126 `i `uc
-"277
--> -> 66 `i `uc
 "278
--> -> 126 `i `uc
+-> -> 0 `i `uc
 "279
--> -> 2 `i `uc
+-> -> 126 `i `uc
 "280
--> -> 2 `i `uc
+-> -> 66 `i `uc
 "281
+-> -> 126 `i `uc
+"282
 -> -> 2 `i `uc
 "283
+-> -> 2 `i `uc
+"284
+-> -> 2 `i `uc
+"286
 -> -> 0 `i `uc
 ..
 ]
-[; ;main.c: 274: uint8_t number_9[8] = {
-[; ;main.c: 275: 0b00000000,
-[; ;main.c: 276: 0b01111110,
-[; ;main.c: 277: 0b01000010,
-[; ;main.c: 278: 0b01111110,
-[; ;main.c: 279: 0b00000010,
-[; ;main.c: 280: 0b00000010,
-[; ;main.c: 281: 0b00000010,
-[; ;main.c: 282: 0b00000000
-[; ;main.c: 283: };
-"285
+[; ;main.c: 277: uint8_t number_9[8] = {
+[; ;main.c: 278: 0b00000000,
+[; ;main.c: 279: 0b01111110,
+[; ;main.c: 280: 0b01000010,
+[; ;main.c: 281: 0b01111110,
+[; ;main.c: 282: 0b00000010,
+[; ;main.c: 283: 0b00000010,
+[; ;main.c: 284: 0b00000010,
+[; ;main.c: 285: 0b00000000
+[; ;main.c: 286: };
+"288
 [v _numberTable `*uc ~T0 @X0 -> 10 `i e ]
 [i _numberTable
 :U ..
-"286
-&U _number_0
-"287
-&U _number_1
-"288
-&U _number_2
 "289
-&U _number_3
+&U _number_0
 "290
-&U _number_4
+&U _number_1
 "291
-&U _number_5
+&U _number_2
 "292
-&U _number_6
+&U _number_3
 "293
-&U _number_7
+&U _number_4
 "294
-&U _number_8
+&U _number_5
+"295
+&U _number_6
 "296
+&U _number_7
+"297
+&U _number_8
+"299
 &U _number_9
 ..
 ]
-[; ;main.c: 285: uint8_t * numberTable[10] = {
-[; ;main.c: 286: number_0,
-[; ;main.c: 287: number_1,
-[; ;main.c: 288: number_2,
-[; ;main.c: 289: number_3,
-[; ;main.c: 290: number_4,
-[; ;main.c: 291: number_5,
-[; ;main.c: 292: number_6,
-[; ;main.c: 293: number_7,
-[; ;main.c: 294: number_8,
-[; ;main.c: 295: number_9
-[; ;main.c: 296: };
-"298
+[; ;main.c: 288: uint8_t * numberTable[10] = {
+[; ;main.c: 289: number_0,
+[; ;main.c: 290: number_1,
+[; ;main.c: 291: number_2,
+[; ;main.c: 292: number_3,
+[; ;main.c: 293: number_4,
+[; ;main.c: 294: number_5,
+[; ;main.c: 295: number_6,
+[; ;main.c: 296: number_7,
+[; ;main.c: 297: number_8,
+[; ;main.c: 298: number_9
+[; ;main.c: 299: };
+"301
 [v _writeDisplay `(v ~T0 @X0 1 ef ]
 {
-[; ;main.c: 298: void writeDisplay() {
+[; ;main.c: 301: void writeDisplay() {
 [e :U _writeDisplay ]
 [f ]
-[; ;main.c: 299: writebuffer[0] = 0;
-"299
+[; ;main.c: 302: writebuffer[0] = 0;
+"302
 [e = *U + &U _writebuffer * -> -> -> 0 `i `ui `ux -> -> # *U &U _writebuffer `ui `ux -> -> 0 `i `uc ]
-[; ;main.c: 300: for (i = 1; i < 17; i += 2) {
-"300
+[; ;main.c: 303: for (i = 1; i < 17; i += 2) {
+"303
 {
 [e = _i -> -> 1 `i `uc ]
 [e $ < -> _i `i -> 17 `i 1217  ]
 [e $U 1218  ]
 [e :U 1217 ]
 {
-[; ;main.c: 301: writebuffer[i] = pixelbuffer[i / 2] & 0xFF;
-"301
+[; ;main.c: 304: writebuffer[i] = pixelbuffer[i / 2] & 0xFF;
+"304
 [e = *U + &U _writebuffer * -> _i `ux -> -> # *U &U _writebuffer `ui `ux -> & *U + &U _pixelbuffer * -> -> / -> _i `i -> 2 `i `ui `ux -> -> # *U &U _pixelbuffer `ui `ux -> -> 255 `i `ui `uc ]
-[; ;main.c: 302: writebuffer[i + 1] = pixelbuffer[i / 2] >> 8;
-"302
+[; ;main.c: 305: writebuffer[i + 1] = pixelbuffer[i / 2] >> 8;
+"305
 [e = *U + &U _writebuffer * -> -> + -> _i `i -> 1 `i `ui `ux -> -> # *U &U _writebuffer `ui `ux -> >> *U + &U _pixelbuffer * -> -> / -> _i `i -> 2 `i `ui `ux -> -> # *U &U _pixelbuffer `ui `ux -> 8 `i `uc ]
-"303
+"306
 }
-"300
+"303
 [e =+ _i -> -> 2 `i `uc ]
 [e $ < -> _i `i -> 17 `i 1217  ]
 [e :U 1218 ]
-"303
+"306
 }
-[; ;main.c: 303: }
-[; ;main.c: 304: i2c_writeNBytes(0x70, writebuffer, 17);
-"304
+[; ;main.c: 306: }
+[; ;main.c: 307: i2c_writeNBytes(0x70, writebuffer, 17);
+"307
 [e ( _i2c_writeNBytes (3 , , -> -> 112 `i `uc -> &U _writebuffer `*v -> -> 17 `i `ui ]
-[; ;main.c: 305: }
-"305
+[; ;main.c: 308: }
+"308
 [e :UE 1216 ]
 }
-"307
+"310
 [v _drawPixel `(v ~T0 @X0 1 ef3`uc`uc`uc ]
 {
-[; ;main.c: 307: void drawPixel(uint8_t x, uint8_t y, uint8_t color) {
+[; ;main.c: 310: void drawPixel(uint8_t x, uint8_t y, uint8_t color) {
 [e :U _drawPixel ]
 [v _x `uc ~T0 @X0 1 r1 ]
 [v _y `uc ~T0 @X0 1 r2 ]
 [v _color `uc ~T0 @X0 1 r3 ]
 [f ]
-[; ;main.c: 308: if (color == 1) {
-"308
+[; ;main.c: 311: if (color == 1) {
+"311
 [e $ ! == -> _color `i -> 1 `i 1221  ]
 {
-[; ;main.c: 309: pixelbuffer[y] |= 1 << x;
-"309
+[; ;main.c: 312: pixelbuffer[y] |= 1 << x;
+"312
 [e =| *U + &U _pixelbuffer * -> _y `ux -> -> # *U &U _pixelbuffer `ui `ux -> << -> 1 `i _x `ui ]
-[; ;main.c: 310: pixelbuffer[y] &= ~(1 << (x + 8));
-"310
+[; ;main.c: 313: pixelbuffer[y] &= ~(1 << (x + 8));
+"313
 [e =& *U + &U _pixelbuffer * -> _y `ux -> -> # *U &U _pixelbuffer `ui `ux -> ~ << -> 1 `i + -> _x `i -> 8 `i `ui ]
-"311
+"314
 }
-[; ;main.c: 311: } else if (color == 2) {
+[; ;main.c: 314: } else if (color == 2) {
 [e $U 1222  ]
 [e :U 1221 ]
 [e $ ! == -> _color `i -> 2 `i 1223  ]
 {
-[; ;main.c: 312: pixelbuffer[y] |= 1 << (x + 8);
-"312
+[; ;main.c: 315: pixelbuffer[y] |= 1 << (x + 8);
+"315
 [e =| *U + &U _pixelbuffer * -> _y `ux -> -> # *U &U _pixelbuffer `ui `ux -> << -> 1 `i + -> _x `i -> 8 `i `ui ]
-[; ;main.c: 313: pixelbuffer[y] &= ~(1 << x);
-"313
+[; ;main.c: 316: pixelbuffer[y] &= ~(1 << x);
+"316
 [e =& *U + &U _pixelbuffer * -> _y `ux -> -> # *U &U _pixelbuffer `ui `ux -> ~ << -> 1 `i _x `ui ]
-"314
+"317
 }
-[; ;main.c: 314: } else if (color == 3) {
+[; ;main.c: 317: } else if (color == 3) {
 [e $U 1224  ]
 [e :U 1223 ]
 [e $ ! == -> _color `i -> 3 `i 1225  ]
 {
-[; ;main.c: 315: pixelbuffer[y] |= (1 << (x + 8)) | (1 << x);
-"315
+[; ;main.c: 318: pixelbuffer[y] |= (1 << (x + 8)) | (1 << x);
+"318
 [e =| *U + &U _pixelbuffer * -> _y `ux -> -> # *U &U _pixelbuffer `ui `ux -> | << -> 1 `i + -> _x `i -> 8 `i << -> 1 `i _x `ui ]
-"316
+"319
 }
-[; ;main.c: 316: } else if (color == 0) {
+[; ;main.c: 319: } else if (color == 0) {
 [e $U 1226  ]
 [e :U 1225 ]
 [e $ ! == -> _color `i -> 0 `i 1227  ]
 {
-[; ;main.c: 317: pixelbuffer[y] &= ~(1 << x) & ~(1 << (x + 8));
-"317
+[; ;main.c: 320: pixelbuffer[y] &= ~(1 << x) & ~(1 << (x + 8));
+"320
 [e =& *U + &U _pixelbuffer * -> _y `ux -> -> # *U &U _pixelbuffer `ui `ux -> & ~ << -> 1 `i _x ~ << -> 1 `i + -> _x `i -> 8 `i `ui ]
-"318
+"321
 }
 [e :U 1227 ]
-"319
+"322
 [e :U 1226 ]
 [e :U 1224 ]
 [e :U 1222 ]
-[; ;main.c: 318: }
-[; ;main.c: 319: }
+[; ;main.c: 321: }
+[; ;main.c: 322: }
 [e :UE 1220 ]
 }
-"321
+"324
 [v _clearPixels `(v ~T0 @X0 1 ef ]
 {
-[; ;main.c: 321: void clearPixels() {
+[; ;main.c: 324: void clearPixels() {
 [e :U _clearPixels ]
 [f ]
-[; ;main.c: 322: for (i = 0; i < 8; i++) {
-"322
+[; ;main.c: 325: for (i = 0; i < 8; i++) {
+"325
 {
 [e = _i -> -> 0 `i `uc ]
 [e $ < -> _i `i -> 8 `i 1229  ]
 [e $U 1230  ]
 [e :U 1229 ]
 {
-[; ;main.c: 323: pixelbuffer[i] = 0;
-"323
+[; ;main.c: 326: pixelbuffer[i] = 0;
+"326
 [e = *U + &U _pixelbuffer * -> _i `ux -> -> # *U &U _pixelbuffer `ui `ux -> -> 0 `i `ui ]
-"324
+"327
 }
-"322
+"325
 [e ++ _i -> -> 1 `i `uc ]
 [e $ < -> _i `i -> 8 `i 1229  ]
 [e :U 1230 ]
-"324
+"327
 }
-[; ;main.c: 324: }
-[; ;main.c: 325: }
-"325
+[; ;main.c: 327: }
+[; ;main.c: 328: }
+"328
 [e :UE 1228 ]
 }
-"327
+"330
 [v _initializeDisplay `(v ~T0 @X0 1 ef ]
 {
-[; ;main.c: 327: void initializeDisplay() {
+[; ;main.c: 330: void initializeDisplay() {
 [e :U _initializeDisplay ]
 [f ]
-[; ;main.c: 328: for (i = 0; i < 8; i++) {
-"328
+[; ;main.c: 331: for (i = 0; i < 8; i++) {
+"331
 {
 [e = _i -> -> 0 `i `uc ]
 [e $ < -> _i `i -> 8 `i 1233  ]
 [e $U 1234  ]
 [e :U 1233 ]
 {
-[; ;main.c: 329: pixelbuffer[i] = 0;
-"329
-[e = *U + &U _pixelbuffer * -> _i `ux -> -> # *U &U _pixelbuffer `ui `ux -> -> 0 `i `ui ]
-"330
-}
-"328
-[e ++ _i -> -> 1 `i `uc ]
-[e $ < -> _i `i -> 8 `i 1233  ]
-[e :U 1234 ]
-"330
-}
-[; ;main.c: 330: }
-[; ;main.c: 331: for (i = 0; i < 8; i++) {
-"331
-{
-[e = _i -> -> 0 `i `uc ]
-[e $ < -> _i `i -> 8 `i 1236  ]
-[e $U 1237  ]
-[e :U 1236 ]
-{
-[; ;main.c: 332: writebuffer[i] = 0;
+[; ;main.c: 332: pixelbuffer[i] = 0;
 "332
-[e = *U + &U _writebuffer * -> _i `ux -> -> # *U &U _writebuffer `ui `ux -> -> 0 `i `uc ]
+[e = *U + &U _pixelbuffer * -> _i `ux -> -> # *U &U _pixelbuffer `ui `ux -> -> 0 `i `ui ]
 "333
 }
 "331
 [e ++ _i -> -> 1 `i `uc ]
-[e $ < -> _i `i -> 8 `i 1236  ]
-[e :U 1237 ]
+[e $ < -> _i `i -> 8 `i 1233  ]
+[e :U 1234 ]
 "333
 }
 [; ;main.c: 333: }
@@ -11884,210 +11881,210 @@ Version 3.2 HI-TECH Software Intermediate Code
 "334
 {
 [e = _i -> -> 0 `i `uc ]
-[e $ < -> _i `i -> 8 `i 1239  ]
-[e $U 1240  ]
-[e :U 1239 ]
+[e $ < -> _i `i -> 8 `i 1236  ]
+[e $U 1237  ]
+[e :U 1236 ]
 {
-[; ;main.c: 335: walls[i] = 0;
+[; ;main.c: 335: writebuffer[i] = 0;
 "335
-[e = *U + &U _walls * -> _i `ux -> -> # *U &U _walls `ui `ux -> -> 0 `i `uc ]
+[e = *U + &U _writebuffer * -> _i `ux -> -> # *U &U _writebuffer `ui `ux -> -> 0 `i `uc ]
 "336
 }
 "334
 [e ++ _i -> -> 1 `i `uc ]
-[e $ < -> _i `i -> 8 `i 1239  ]
-[e :U 1240 ]
+[e $ < -> _i `i -> 8 `i 1236  ]
+[e :U 1237 ]
 "336
 }
 [; ;main.c: 336: }
-[; ;main.c: 338: writebuffer[0] = 0x21;
+[; ;main.c: 337: for (i = 0; i < 8; i++) {
+"337
+{
+[e = _i -> -> 0 `i `uc ]
+[e $ < -> _i `i -> 8 `i 1239  ]
+[e $U 1240  ]
+[e :U 1239 ]
+{
+[; ;main.c: 338: walls[i] = 0;
 "338
-[e = *U + &U _writebuffer * -> -> -> 0 `i `ui `ux -> -> # *U &U _writebuffer `ui `ux -> -> 33 `i `uc ]
-[; ;main.c: 339: i2c_writeNBytes(0x70, writebuffer, 1);
+[e = *U + &U _walls * -> _i `ux -> -> # *U &U _walls `ui `ux -> -> 0 `i `uc ]
 "339
-[e ( _i2c_writeNBytes (3 , , -> -> 112 `i `uc -> &U _writebuffer `*v -> -> 1 `i `ui ]
-[; ;main.c: 342: writebuffer[0] = 0x80 | 0x01;
+}
+"337
+[e ++ _i -> -> 1 `i `uc ]
+[e $ < -> _i `i -> 8 `i 1239  ]
+[e :U 1240 ]
+"339
+}
+[; ;main.c: 339: }
+[; ;main.c: 341: writebuffer[0] = 0x21;
+"341
+[e = *U + &U _writebuffer * -> -> -> 0 `i `ui `ux -> -> # *U &U _writebuffer `ui `ux -> -> 33 `i `uc ]
+[; ;main.c: 342: i2c_writeNBytes(0x70, writebuffer, 1);
 "342
-[e = *U + &U _writebuffer * -> -> -> 0 `i `ui `ux -> -> # *U &U _writebuffer `ui `ux -> | -> 128 `i -> 1 `i `uc ]
-[; ;main.c: 343: i2c_writeNBytes(0x70, writebuffer, 1);
-"343
 [e ( _i2c_writeNBytes (3 , , -> -> 112 `i `uc -> &U _writebuffer `*v -> -> 1 `i `ui ]
-[; ;main.c: 344: }
-"344
+[; ;main.c: 345: writebuffer[0] = 0x80 | 0x01;
+"345
+[e = *U + &U _writebuffer * -> -> -> 0 `i `ui `ux -> -> # *U &U _writebuffer `ui `ux -> | -> 128 `i -> 1 `i `uc ]
+[; ;main.c: 346: i2c_writeNBytes(0x70, writebuffer, 1);
+"346
+[e ( _i2c_writeNBytes (3 , , -> -> 112 `i `uc -> &U _writebuffer `*v -> -> 1 `i `ui ]
+[; ;main.c: 347: }
+"347
 [e :UE 1232 ]
 }
-"346
+"349
 [v _random `(uc ~T0 @X0 1 ef2`uc`uc ]
 {
-[; ;main.c: 346: uint8_t random(uint8_t lower, uint8_t upper) {
+[; ;main.c: 349: uint8_t random(uint8_t lower, uint8_t upper) {
 [e :U _random ]
 [v _lower `uc ~T0 @X0 1 r1 ]
 [v _upper `uc ~T0 @X0 1 r2 ]
 [f ]
-[; ;main.c: 347: return rand() % (upper - lower) + lower;
-"347
+[; ;main.c: 350: return rand() % (upper - lower) + lower;
+"350
 [e ) -> + % ( _rand ..  - -> _upper `i -> _lower `i -> _lower `i `uc ]
 [e $UE 1242  ]
-[; ;main.c: 348: }
-"348
+[; ;main.c: 351: }
+"351
 [e :UE 1242 ]
 }
-"350
+"353
 [v _reverse `(uc ~T0 @X0 1 ef1`uc ]
 {
-[; ;main.c: 350: uint8_t reverse(uint8_t b) {
+[; ;main.c: 353: uint8_t reverse(uint8_t b) {
 [e :U _reverse ]
 [v _b `uc ~T0 @X0 1 r1 ]
 [f ]
-[; ;main.c: 351: b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
-"351
-[e = _b -> | >> & -> _b `i -> 240 `i -> 4 `i << & -> _b `i -> 15 `i -> 4 `i `uc ]
-[; ;main.c: 352: b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
-"352
-[e = _b -> | >> & -> _b `i -> 204 `i -> 2 `i << & -> _b `i -> 51 `i -> 2 `i `uc ]
-[; ;main.c: 353: b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
-"353
-[e = _b -> | >> & -> _b `i -> 170 `i -> 1 `i << & -> _b `i -> 85 `i -> 1 `i `uc ]
-[; ;main.c: 354: return b;
+[; ;main.c: 354: b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
 "354
+[e = _b -> | >> & -> _b `i -> 240 `i -> 4 `i << & -> _b `i -> 15 `i -> 4 `i `uc ]
+[; ;main.c: 355: b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
+"355
+[e = _b -> | >> & -> _b `i -> 204 `i -> 2 `i << & -> _b `i -> 51 `i -> 2 `i `uc ]
+[; ;main.c: 356: b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
+"356
+[e = _b -> | >> & -> _b `i -> 170 `i -> 1 `i << & -> _b `i -> 85 `i -> 1 `i `uc ]
+[; ;main.c: 357: return b;
+"357
 [e ) _b ]
 [e $UE 1243  ]
-[; ;main.c: 355: }
-"355
+[; ;main.c: 358: }
+"358
 [e :UE 1243 ]
 }
-"357
+"360
 [v _drawWalls `(v ~T0 @X0 1 ef ]
 {
-[; ;main.c: 357: void drawWalls() {
+[; ;main.c: 360: void drawWalls() {
 [e :U _drawWalls ]
 [f ]
-[; ;main.c: 358: for (i = 0; i < 8; i++) {
-"358
+[; ;main.c: 361: for (i = 0; i < 8; i++) {
+"361
 {
 [e = _i -> -> 0 `i `uc ]
 [e $ < -> _i `i -> 8 `i 1245  ]
 [e $U 1246  ]
 [e :U 1245 ]
 {
-[; ;main.c: 359: if (wallColor == 1) {
-"359
+[; ;main.c: 362: if (wallColor == 1) {
+"362
 [e $ ! == -> _wallColor `i -> 1 `i 1248  ]
 {
-[; ;main.c: 360: pixelbuffer[i] |= reverse(walls[i]);
-"360
+[; ;main.c: 363: pixelbuffer[i] |= reverse(walls[i]);
+"363
 [e =| *U + &U _pixelbuffer * -> _i `ux -> -> # *U &U _pixelbuffer `ui `ux -> ( _reverse (1 *U + &U _walls * -> _i `ux -> -> # *U &U _walls `ui `ux `ui ]
-"361
+"364
 }
-[; ;main.c: 361: } else if (wallColor == 2) {
+[; ;main.c: 364: } else if (wallColor == 2) {
 [e $U 1249  ]
 [e :U 1248 ]
 [e $ ! == -> _wallColor `i -> 2 `i 1250  ]
 {
-[; ;main.c: 362: pixelbuffer[i] |= reverse(walls[i]) << 8;
-"362
+[; ;main.c: 365: pixelbuffer[i] |= reverse(walls[i]) << 8;
+"365
 [e =| *U + &U _pixelbuffer * -> _i `ux -> -> # *U &U _pixelbuffer `ui `ux -> << -> ( _reverse (1 *U + &U _walls * -> _i `ux -> -> # *U &U _walls `ui `ux `i -> 8 `i `ui ]
-"363
+"366
 }
-[; ;main.c: 363: } else {
+[; ;main.c: 366: } else {
 [e $U 1251  ]
 [e :U 1250 ]
 {
-[; ;main.c: 364: pixelbuffer[i] |= reverse(walls[i]) << 8 | reverse(walls[i]);
-"364
+[; ;main.c: 367: pixelbuffer[i] |= reverse(walls[i]) << 8 | reverse(walls[i]);
+"367
 [e =| *U + &U _pixelbuffer * -> _i `ux -> -> # *U &U _pixelbuffer `ui `ux -> | << -> ( _reverse (1 *U + &U _walls * -> _i `ux -> -> # *U &U _walls `ui `ux `i -> 8 `i -> ( _reverse (1 *U + &U _walls * -> _i `ux -> -> # *U &U _walls `ui `ux `i `ui ]
-"365
+"368
 }
 [e :U 1251 ]
 [e :U 1249 ]
-"366
+"369
 }
-"358
+"361
 [e ++ _i -> -> 1 `i `uc ]
 [e $ < -> _i `i -> 8 `i 1245  ]
 [e :U 1246 ]
-"366
+"369
 }
-[; ;main.c: 365: }
-[; ;main.c: 366: }
-[; ;main.c: 367: }
-"367
+[; ;main.c: 368: }
+[; ;main.c: 369: }
+[; ;main.c: 370: }
+"370
 [e :UE 1244 ]
 }
-"369
+"372
 [v _wallHeight `uc ~T0 @X0 1 e ]
 [i _wallHeight
 -> -> 0 `i `uc
 ]
-[; ;main.c: 369: uint8_t wallHeight = 0;
-"370
+[; ;main.c: 372: uint8_t wallHeight = 0;
+"373
 [v _topHalf `uc ~T0 @X0 1 e ]
 [i _topHalf
 -> -> 0 `i `uc
 ]
-[; ;main.c: 370: uint8_t topHalf = 0;
-"372
+[; ;main.c: 373: uint8_t topHalf = 0;
+"375
 [v _shiftWalls `(v ~T0 @X0 1 ef ]
 {
-[; ;main.c: 372: void shiftWalls() {
+[; ;main.c: 375: void shiftWalls() {
 [e :U _shiftWalls ]
 [f ]
-[; ;main.c: 373: for (i = 0; i < 8; i++) {
-"373
+[; ;main.c: 376: for (i = 0; i < 8; i++) {
+"376
 {
 [e = _i -> -> 0 `i `uc ]
 [e $ < -> _i `i -> 8 `i 1253  ]
 [e $U 1254  ]
 [e :U 1253 ]
 {
-[; ;main.c: 374: walls[i] = walls[i] << 1;
-"374
+[; ;main.c: 377: walls[i] = walls[i] << 1;
+"377
 [e = *U + &U _walls * -> _i `ux -> -> # *U &U _walls `ui `ux -> << -> *U + &U _walls * -> _i `ux -> -> # *U &U _walls `ui `ux `i -> 1 `i `uc ]
-"375
+"378
 }
-"373
+"376
 [e ++ _i -> -> 1 `i `uc ]
 [e $ < -> _i `i -> 8 `i 1253  ]
 [e :U 1254 ]
-"375
+"378
 }
-[; ;main.c: 375: }
-[; ;main.c: 376: if (createWall == 3) {
-"376
+[; ;main.c: 378: }
+[; ;main.c: 379: if (createWall == 3) {
+"379
 [e $ ! == -> _createWall `i -> 3 `i 1256  ]
 {
-[; ;main.c: 377: wallHeight = random(4, 7);
-"377
+[; ;main.c: 380: wallHeight = random(4, 7);
+"380
 [e = _wallHeight ( _random (2 , -> -> 4 `i `uc -> -> 7 `i `uc ]
-[; ;main.c: 378: topHalf = random(1, wallHeight);
-"378
+[; ;main.c: 381: topHalf = random(1, wallHeight);
+"381
 [e = _topHalf ( _random (2 , -> -> 1 `i `uc _wallHeight ]
-[; ;main.c: 379: for (i = 0; i < topHalf; i++) {
-"379
+[; ;main.c: 382: for (i = 0; i < topHalf; i++) {
+"382
 {
 [e = _i -> -> 0 `i `uc ]
 [e $U 1260  ]
 [e :U 1257 ]
-{
-[; ;main.c: 380: walls[i] |= 1;
-"380
-[e =| *U + &U _walls * -> _i `ux -> -> # *U &U _walls `ui `ux -> -> 1 `i `uc ]
-"381
-}
-"379
-[e ++ _i -> -> 1 `i `uc ]
-[e :U 1260 ]
-[e $ < -> _i `i -> _topHalf `i 1257  ]
-[e :U 1258 ]
-"381
-}
-[; ;main.c: 381: }
-[; ;main.c: 382: for (i = 7; i >= 8 - (wallHeight - topHalf); i--) {
-"382
-{
-[e = _i -> -> 7 `i `uc ]
-[e $U 1264  ]
-[e :U 1261 ]
 {
 [; ;main.c: 383: walls[i] |= 1;
 "383
@@ -12095,105 +12092,125 @@ Version 3.2 HI-TECH Software Intermediate Code
 "384
 }
 "382
+[e ++ _i -> -> 1 `i `uc ]
+[e :U 1260 ]
+[e $ < -> _i `i -> _topHalf `i 1257  ]
+[e :U 1258 ]
+"384
+}
+[; ;main.c: 384: }
+[; ;main.c: 385: for (i = 7; i >= 8 - (wallHeight - topHalf); i--) {
+"385
+{
+[e = _i -> -> 7 `i `uc ]
+[e $U 1264  ]
+[e :U 1261 ]
+{
+[; ;main.c: 386: walls[i] |= 1;
+"386
+[e =| *U + &U _walls * -> _i `ux -> -> # *U &U _walls `ui `ux -> -> 1 `i `uc ]
+"387
+}
+"385
 [e -- _i -> -> 1 `i `uc ]
 [e :U 1264 ]
 [e $ >= -> _i `i - -> 8 `i - -> _wallHeight `i -> _topHalf `i 1261  ]
 [e :U 1262 ]
-"384
-}
-[; ;main.c: 384: }
-[; ;main.c: 385: createWall = 0;
-"385
-[e = _createWall -> -> 0 `i `uc ]
-[; ;main.c: 386: score++;
-"386
-[e ++ _score -> -> 1 `i `ui ]
 "387
 }
-[; ;main.c: 387: } else {
+[; ;main.c: 387: }
+[; ;main.c: 388: createWall = 0;
+"388
+[e = _createWall -> -> 0 `i `uc ]
+[; ;main.c: 389: score++;
+"389
+[e ++ _score -> -> 1 `i `ui ]
+"390
+}
+[; ;main.c: 390: } else {
 [e $U 1265  ]
 [e :U 1256 ]
 {
-[; ;main.c: 388: createWall++;
-"388
+[; ;main.c: 391: createWall++;
+"391
 [e ++ _createWall -> -> 1 `i `uc ]
-"389
+"392
 }
 [e :U 1265 ]
-[; ;main.c: 389: }
-[; ;main.c: 390: }
-"390
+[; ;main.c: 392: }
+[; ;main.c: 393: }
+"393
 [e :UE 1252 ]
 }
-"392
+"395
 [v _buttonInterrupt `(v ~T0 @X0 1 ef ]
 {
-[; ;main.c: 392: void buttonInterrupt() {
+[; ;main.c: 395: void buttonInterrupt() {
 [e :U _buttonInterrupt ]
 [f ]
-[; ;main.c: 393: start = 1;
-"393
+[; ;main.c: 396: start = 1;
+"396
 [e = _start -> -> 1 `i `uc ]
-[; ;main.c: 394: fall = 0;
-"394
+[; ;main.c: 397: fall = 0;
+"397
 [e = _fall -> -> 0 `i `uc ]
-[; ;main.c: 395: if (gravityCounter < 255) {
-"395
+[; ;main.c: 398: if (gravityCounter < 255) {
+"398
 [e $ ! < -> _gravityCounter `i -> 255 `i 1267  ]
 {
-[; ;main.c: 396: gravityCounter = 255;
-"396
+[; ;main.c: 399: gravityCounter = 255;
+"399
 [e = _gravityCounter -> -> 255 `i `uc ]
-"397
+"400
 }
 [e :U 1267 ]
-[; ;main.c: 397: }
-[; ;main.c: 398: }
-"398
+[; ;main.c: 400: }
+[; ;main.c: 401: }
+"401
 [e :UE 1266 ]
 }
-"400
+"403
 [v _writeWord `(v ~T0 @X0 1 ef2`**uc`uc ]
 {
-[; ;main.c: 400: void writeWord(uint8_t ** text, uint8_t len) {
+[; ;main.c: 403: void writeWord(uint8_t ** text, uint8_t len) {
 [e :U _writeWord ]
 [v _text `**uc ~T0 @X0 1 r1 ]
 [v _len `uc ~T0 @X0 1 r2 ]
 [f ]
-[; ;main.c: 401: for (i = 0; i < 8; i++) {
-"401
+[; ;main.c: 404: for (i = 0; i < 8; i++) {
+"404
 {
 [e = _i -> -> 0 `i `uc ]
 [e $ < -> _i `i -> 8 `i 1269  ]
 [e $U 1270  ]
 [e :U 1269 ]
 {
-[; ;main.c: 402: walls[i] = 0;
-"402
+[; ;main.c: 405: walls[i] = 0;
+"405
 [e = *U + &U _walls * -> _i `ux -> -> # *U &U _walls `ui `ux -> -> 0 `i `uc ]
-"403
+"406
 }
-"401
+"404
 [e ++ _i -> -> 1 `i `uc ]
 [e $ < -> _i `i -> 8 `i 1269  ]
 [e :U 1270 ]
-"403
+"406
 }
-[; ;main.c: 403: }
-[; ;main.c: 404: for (uint8_t idx = 0; idx < len; idx++) {
-"404
+[; ;main.c: 406: }
+[; ;main.c: 407: for (uint8_t idx = 0; idx < len; idx++) {
+"407
 {
 [v _idx `uc ~T0 @X0 1 a ]
 [e = _idx -> -> 0 `i `uc ]
 [e $U 1275  ]
 [e :U 1272 ]
 {
-"405
+"408
 [v _shiftValue `uc ~T0 @X0 1 a ]
-[; ;main.c: 405: uint8_t shiftValue = idx % 8;
+[; ;main.c: 408: uint8_t shiftValue = idx % 8;
 [e = _shiftValue -> % -> _idx `i -> 8 `i `uc ]
-[; ;main.c: 406: for (uint8_t k = 0; k < 8; k++) {
-"406
+[; ;main.c: 409: for (uint8_t k = 0; k < 8; k++) {
+"409
 {
 [v _k `uc ~T0 @X0 1 a ]
 [e = _k -> -> 0 `i `uc ]
@@ -12201,522 +12218,542 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e $U 1277  ]
 [e :U 1276 ]
 {
-[; ;main.c: 407: walls[k] = ((text[idx / 8][k]) << shiftValue) |
-[; ;main.c: 408: ((text[idx / 8 + 1][k]) >> 8 - shiftValue);
-"408
+[; ;main.c: 410: walls[k] = ((text[idx / 8][k]) << shiftValue) |
+[; ;main.c: 411: ((text[idx / 8 + 1][k]) >> 8 - shiftValue);
+"411
 [e = *U + &U _walls * -> _k `ux -> -> # *U &U _walls `ui `ux -> | << -> *U + *U + _text * -> / -> _idx `i -> 8 `i `x -> -> # *U _text `i `x * -> _k `ux -> -> # *U *U + _text * -> / -> _idx `i -> 8 `i `x -> -> # *U _text `i `x `ui `ux `i _shiftValue >> -> *U + *U + _text * -> + / -> _idx `i -> 8 `i -> 1 `i `x -> -> # *U _text `i `x * -> _k `ux -> -> # *U *U + _text * -> + / -> _idx `i -> 8 `i -> 1 `i `x -> -> # *U _text `i `x `ui `ux `i - -> 8 `i -> _shiftValue `i `uc ]
-"409
+"412
 }
-"406
+"409
 [e ++ _k -> -> 1 `i `uc ]
 [e $ < -> _k `i -> 8 `i 1276  ]
 [e :U 1277 ]
-"409
-}
-[; ;main.c: 409: }
-[; ;main.c: 410: clearPixels();
-"410
-[e ( _clearPixels ..  ]
-[; ;main.c: 411: drawWalls();
-"411
-[e ( _drawWalls ..  ]
-[; ;main.c: 412: writeDisplay();
 "412
-[e ( _writeDisplay ..  ]
-[; ;main.c: 413: _delay((unsigned long)((70)*(32000000/4000.0)));
-"413
-[e ( __delay (1 -> * -> -> 70 `i `d / -> -> 32000000 `l `d .4000.0 `ul ]
-"414
 }
-"404
+[; ;main.c: 412: }
+[; ;main.c: 413: clearPixels();
+"413
+[e ( _clearPixels ..  ]
+[; ;main.c: 414: drawWalls();
+"414
+[e ( _drawWalls ..  ]
+[; ;main.c: 415: writeDisplay();
+"415
+[e ( _writeDisplay ..  ]
+[; ;main.c: 416: _delay((unsigned long)((70)*(32000000/4000.0)));
+"416
+[e ( __delay (1 -> * -> -> 70 `i `d / -> -> 32000000 `l `d .4000.0 `ul ]
+"417
+}
+"407
 [e ++ _idx -> -> 1 `i `uc ]
 [e :U 1275 ]
 [e $ < -> _idx `i -> _len `i 1272  ]
 [e :U 1273 ]
-"414
+"417
 }
-[; ;main.c: 414: }
-[; ;main.c: 415: }
-"415
+[; ;main.c: 417: }
+[; ;main.c: 418: }
+"418
 [e :UE 1268 ]
 }
-"417
+"420
 [v _write `(v ~T0 @X0 1 ef1`uc ]
 {
-[; ;main.c: 417: void write(uint8_t selection) {
+[; ;main.c: 420: void write(uint8_t selection) {
 [e :U _write ]
 [v _selection `uc ~T0 @X0 1 r1 ]
 [f ]
-"418
+"421
 [v _number `ui ~T0 @X0 1 a ]
-[; ;main.c: 418: uint16_t number = 0;
+[; ;main.c: 421: uint16_t number = 0;
 [e = _number -> -> 0 `i `ui ]
-[; ;main.c: 419: if (selection == 10) {
-"419
+[; ;main.c: 422: if (selection == 10) {
+"422
 [e $ ! == -> _selection `i -> 10 `i 1280  ]
 {
-[; ;main.c: 420: wallColor = 3;
-"420
-[e = _wallColor -> -> 3 `i `uc ]
-"421
-[v _toWrite `*uc ~T0 @X0 -> 5 `i a ]
-[; ;main.c: 421: uint8_t * toWrite[5];
-[; ;main.c: 422: toWrite[0] = letter_space;
-"422
-[e = *U + &U _toWrite * -> -> -> 0 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_space ]
-[; ;main.c: 423: toWrite[1] = letter_n;
+[; ;main.c: 423: wallColor = 3;
 "423
-[e = *U + &U _toWrite * -> -> -> 1 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_n ]
-[; ;main.c: 424: toWrite[2] = letter_e;
+[e = _wallColor -> -> 3 `i `uc ]
 "424
-[e = *U + &U _toWrite * -> -> -> 2 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_e ]
-[; ;main.c: 425: toWrite[3] = letter_w;
+[v _toWrite `*uc ~T0 @X0 -> 5 `i a ]
+[; ;main.c: 424: uint8_t * toWrite[5];
+[; ;main.c: 425: toWrite[0] = letter_space;
 "425
-[e = *U + &U _toWrite * -> -> -> 3 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_w ]
-[; ;main.c: 426: toWrite[4] = letter_space;
+[e = *U + &U _toWrite * -> -> -> 0 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_space ]
+[; ;main.c: 426: toWrite[1] = letter_n;
 "426
-[e = *U + &U _toWrite * -> -> -> 4 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_space ]
-[; ;main.c: 427: writeWord(toWrite, 32);
+[e = *U + &U _toWrite * -> -> -> 1 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_n ]
+[; ;main.c: 427: toWrite[2] = letter_e;
 "427
-[e ( _writeWord (2 , &U _toWrite -> -> 32 `i `uc ]
+[e = *U + &U _toWrite * -> -> -> 2 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_e ]
+[; ;main.c: 428: toWrite[3] = letter_w;
 "428
+[e = *U + &U _toWrite * -> -> -> 3 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_w ]
+[; ;main.c: 429: toWrite[4] = letter_space;
+"429
+[e = *U + &U _toWrite * -> -> -> 4 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_space ]
+[; ;main.c: 430: writeWord(toWrite, 32);
+"430
+[e ( _writeWord (2 , &U _toWrite -> -> 32 `i `uc ]
+"431
 }
 [e :U 1280 ]
-[; ;main.c: 428: }
-[; ;main.c: 429: if (selection == 11 || selection == 10) {
-"429
+[; ;main.c: 431: }
+[; ;main.c: 432: if (selection == 11 || selection == 10) {
+"432
 [e $ ! || == -> _selection `i -> 11 `i == -> _selection `i -> 10 `i 1281  ]
 {
-"430
-[v _toWrite `*uc ~T0 @X0 -> 8 `i a ]
-[; ;main.c: 430: uint8_t * toWrite[8];
-[; ;main.c: 431: toWrite[0] = letter_space;
-"431
-[e = *U + &U _toWrite * -> -> -> 0 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_space ]
-[; ;main.c: 432: toWrite[1] = letter_hi;
-"432
-[e = *U + &U _toWrite * -> -> -> 1 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_hi ]
-[; ;main.c: 433: toWrite[2] = letter_s;
 "433
-[e = *U + &U _toWrite * -> -> -> 2 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_s ]
-[; ;main.c: 434: toWrite[3] = letter_c;
+[v _toWrite `*uc ~T0 @X0 -> 8 `i a ]
+[; ;main.c: 433: uint8_t * toWrite[8];
+[; ;main.c: 434: toWrite[0] = letter_space;
 "434
-[e = *U + &U _toWrite * -> -> -> 3 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_c ]
-[; ;main.c: 435: toWrite[4] = letter_o;
+[e = *U + &U _toWrite * -> -> -> 0 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_space ]
+[; ;main.c: 435: toWrite[1] = letter_hi;
 "435
-[e = *U + &U _toWrite * -> -> -> 4 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_o ]
-[; ;main.c: 436: toWrite[5] = letter_r;
+[e = *U + &U _toWrite * -> -> -> 1 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_hi ]
+[; ;main.c: 436: toWrite[2] = letter_s;
 "436
-[e = *U + &U _toWrite * -> -> -> 5 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_r ]
-[; ;main.c: 437: toWrite[6] = letter_e;
+[e = *U + &U _toWrite * -> -> -> 2 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_s ]
+[; ;main.c: 437: toWrite[3] = letter_c;
 "437
-[e = *U + &U _toWrite * -> -> -> 6 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_e ]
-[; ;main.c: 438: toWrite[7] = letter_space;
+[e = *U + &U _toWrite * -> -> -> 3 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_c ]
+[; ;main.c: 438: toWrite[4] = letter_o;
 "438
-[e = *U + &U _toWrite * -> -> -> 7 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_space ]
-[; ;main.c: 439: writeWord(toWrite, 56);
+[e = *U + &U _toWrite * -> -> -> 4 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_o ]
+[; ;main.c: 439: toWrite[5] = letter_r;
 "439
-[e ( _writeWord (2 , &U _toWrite -> -> 56 `i `uc ]
+[e = *U + &U _toWrite * -> -> -> 5 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_r ]
+[; ;main.c: 440: toWrite[6] = letter_e;
 "440
+[e = *U + &U _toWrite * -> -> -> 6 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_e ]
+[; ;main.c: 441: toWrite[7] = letter_space;
+"441
+[e = *U + &U _toWrite * -> -> -> 7 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_space ]
+[; ;main.c: 442: writeWord(toWrite, 56);
+"442
+[e ( _writeWord (2 , &U _toWrite -> -> 56 `i `uc ]
+"443
 }
 [e :U 1281 ]
-[; ;main.c: 440: }
-[; ;main.c: 441: if (selection == 12) {
-"441
+[; ;main.c: 443: }
+[; ;main.c: 444: if (selection == 12) {
+"444
 [e $ ! == -> _selection `i -> 12 `i 1282  ]
 {
-[; ;main.c: 442: wallColor = 2;
-"442
-[e = _wallColor -> -> 2 `i `uc ]
-"443
-[v _toWrite `*uc ~T0 @X0 -> 7 `i a ]
-[; ;main.c: 443: uint8_t * toWrite[7];
-[; ;main.c: 444: toWrite[0] = letter_space;
-"444
-[e = *U + &U _toWrite * -> -> -> 0 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_space ]
-[; ;main.c: 445: toWrite[1] = letter_s;
+[; ;main.c: 445: wallColor = 2;
 "445
-[e = *U + &U _toWrite * -> -> -> 1 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_s ]
-[; ;main.c: 446: toWrite[2] = letter_c;
+[e = _wallColor -> -> 2 `i `uc ]
 "446
-[e = *U + &U _toWrite * -> -> -> 2 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_c ]
-[; ;main.c: 447: toWrite[3] = letter_o;
+[v _toWrite `*uc ~T0 @X0 -> 7 `i a ]
+[; ;main.c: 446: uint8_t * toWrite[7];
+[; ;main.c: 447: toWrite[0] = letter_space;
 "447
-[e = *U + &U _toWrite * -> -> -> 3 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_o ]
-[; ;main.c: 448: toWrite[4] = letter_r;
+[e = *U + &U _toWrite * -> -> -> 0 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_space ]
+[; ;main.c: 448: toWrite[1] = letter_s;
 "448
-[e = *U + &U _toWrite * -> -> -> 4 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_r ]
-[; ;main.c: 449: toWrite[5] = letter_e;
+[e = *U + &U _toWrite * -> -> -> 1 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_s ]
+[; ;main.c: 449: toWrite[2] = letter_c;
 "449
-[e = *U + &U _toWrite * -> -> -> 5 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_e ]
-[; ;main.c: 450: toWrite[6] = letter_space;
+[e = *U + &U _toWrite * -> -> -> 2 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_c ]
+[; ;main.c: 450: toWrite[3] = letter_o;
 "450
-[e = *U + &U _toWrite * -> -> -> 6 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_space ]
-[; ;main.c: 451: writeWord(toWrite, 48);
+[e = *U + &U _toWrite * -> -> -> 3 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_o ]
+[; ;main.c: 451: toWrite[4] = letter_r;
 "451
-[e ( _writeWord (2 , &U _toWrite -> -> 48 `i `uc ]
-[; ;main.c: 452: number = score;
+[e = *U + &U _toWrite * -> -> -> 4 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_r ]
+[; ;main.c: 452: toWrite[5] = letter_e;
 "452
-[e = _number _score ]
+[e = *U + &U _toWrite * -> -> -> 5 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_e ]
+[; ;main.c: 453: toWrite[6] = letter_space;
 "453
+[e = *U + &U _toWrite * -> -> -> 6 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_space ]
+[; ;main.c: 454: writeWord(toWrite, 48);
+"454
+[e ( _writeWord (2 , &U _toWrite -> -> 48 `i `uc ]
+[; ;main.c: 455: number = score;
+"455
+[e = _number _score ]
+"456
 }
-[; ;main.c: 453: } else {
+[; ;main.c: 456: } else {
 [e $U 1283  ]
 [e :U 1282 ]
 {
-[; ;main.c: 454: number = hiscore;
-"454
+[; ;main.c: 457: number = hiscore;
+"457
 [e = _number _hiscore ]
-"455
+"458
 }
 [e :U 1283 ]
-"456
+"459
 [v _digit1 `uc ~T0 @X0 1 a ]
 [v _digit2 `uc ~T0 @X0 1 a ]
 [v _digit3 `uc ~T0 @X0 1 a ]
 [v _digit4 `uc ~T0 @X0 1 a ]
 [v _digit5 `uc ~T0 @X0 1 a ]
-[; ;main.c: 455: }
-[; ;main.c: 456: uint8_t digit1,digit2,digit3,digit4,digit5;
-[; ;main.c: 457: digit1 = (number/10000)%10;
-"457
-[e = _digit1 -> % / _number -> -> 10000 `i `ui -> -> 10 `i `ui `uc ]
-[; ;main.c: 458: digit2 = (number/1000)%10;
-"458
-[e = _digit2 -> % / _number -> -> 1000 `i `ui -> -> 10 `i `ui `uc ]
-[; ;main.c: 459: digit3 = (number/100)%10;
-"459
-[e = _digit3 -> % / _number -> -> 100 `i `ui -> -> 10 `i `ui `uc ]
-[; ;main.c: 460: digit4 = (number/10)%10;
+[; ;main.c: 458: }
+[; ;main.c: 459: uint8_t digit1,digit2,digit3,digit4,digit5;
+[; ;main.c: 460: digit1 = (number/10000)%10;
 "460
-[e = _digit4 -> % / _number -> -> 10 `i `ui -> -> 10 `i `ui `uc ]
-[; ;main.c: 461: digit5 = number%10;
+[e = _digit1 -> % / _number -> -> 10000 `i `ui -> -> 10 `i `ui `uc ]
+[; ;main.c: 461: digit2 = (number/1000)%10;
 "461
-[e = _digit5 -> % _number -> -> 10 `i `ui `uc ]
+[e = _digit2 -> % / _number -> -> 1000 `i `ui -> -> 10 `i `ui `uc ]
+[; ;main.c: 462: digit3 = (number/100)%10;
 "462
-[v _toWrite `*uc ~T0 @X0 -> 7 `i a ]
-[v F12456 `uc ~T0 @X0 -> 8 `i s ]
-[i F12456
-:U ..
+[e = _digit3 -> % / _number -> -> 100 `i `ui -> -> 10 `i `ui `uc ]
+[; ;main.c: 463: digit4 = (number/10)%10;
+"463
+[e = _digit4 -> % / _number -> -> 10 `i `ui -> -> 10 `i `ui `uc ]
+[; ;main.c: 464: digit5 = number%10;
 "464
--> -> 0 `i `uc
+[e = _digit5 -> % _number -> -> 10 `i `ui `uc ]
 "465
--> -> 0 `i `uc
-"466
--> -> 0 `i `uc
-"467
--> -> 0 `i `uc
-"468
--> -> 0 `i `uc
+[v _toWrite `*uc ~T0 @X0 -> 7 `i a ]
+[v F12469 `uc ~T0 @X0 -> 8 `i s ]
+[i F12469
+:U ..
 "469
 -> -> 0 `i `uc
 "470
 -> -> 0 `i `uc
+"471
+-> -> 0 `i `uc
 "472
+-> -> 0 `i `uc
+"473
+-> -> 0 `i `uc
+"474
+-> -> 0 `i `uc
+"475
+-> -> 0 `i `uc
+"477
 -> -> 0 `i `uc
 ..
 ]
 [v _letter_space `uc ~T0 @X0 -> 8 `i a ]
-[; ;main.c: 462: uint8_t * toWrite[7];
-[; ;main.c: 463: uint8_t letter_space[8] = {
-[; ;main.c: 464: 0b00000000,
-[; ;main.c: 465: 0b00000000,
-[; ;main.c: 466: 0b00000000,
-[; ;main.c: 467: 0b00000000,
-[; ;main.c: 468: 0b00000000,
+[; ;main.c: 465: uint8_t * toWrite[7];
+[; ;main.c: 468: uint8_t letter_space[8] = {
 [; ;main.c: 469: 0b00000000,
 [; ;main.c: 470: 0b00000000,
-[; ;main.c: 471: 0b00000000
-[; ;main.c: 472: };
-[e = _letter_space F12456 ]
-[; ;main.c: 473: toWrite[0] = letter_space;
-"473
-[e = *U + &U _toWrite * -> -> -> 0 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_space ]
-[; ;main.c: 474: toWrite[1] = numberTable[digit1];
-"474
-[e = *U + &U _toWrite * -> -> -> 1 `i `ui `ux -> -> # *U &U _toWrite `ui `ux *U + &U _numberTable * -> _digit1 `ux -> -> # *U &U _numberTable `ui `ux ]
-[; ;main.c: 475: toWrite[2] = numberTable[digit2];
-"475
-[e = *U + &U _toWrite * -> -> -> 2 `i `ui `ux -> -> # *U &U _toWrite `ui `ux *U + &U _numberTable * -> _digit2 `ux -> -> # *U &U _numberTable `ui `ux ]
-[; ;main.c: 476: toWrite[3] = numberTable[digit3];
-"476
-[e = *U + &U _toWrite * -> -> -> 3 `i `ui `ux -> -> # *U &U _toWrite `ui `ux *U + &U _numberTable * -> _digit3 `ux -> -> # *U &U _numberTable `ui `ux ]
-[; ;main.c: 477: toWrite[4] = numberTable[digit4];
-"477
-[e = *U + &U _toWrite * -> -> -> 4 `i `ui `ux -> -> # *U &U _toWrite `ui `ux *U + &U _numberTable * -> _digit4 `ux -> -> # *U &U _numberTable `ui `ux ]
-[; ;main.c: 478: toWrite[5] = numberTable[digit5];
+[; ;main.c: 471: 0b00000000,
+[; ;main.c: 472: 0b00000000,
+[; ;main.c: 473: 0b00000000,
+[; ;main.c: 474: 0b00000000,
+[; ;main.c: 475: 0b00000000,
+[; ;main.c: 476: 0b00000000
+[; ;main.c: 477: };
+[e = _letter_space F12469 ]
+[; ;main.c: 478: toWrite[0] = letter_space;
 "478
-[e = *U + &U _toWrite * -> -> -> 5 `i `ui `ux -> -> # *U &U _toWrite `ui `ux *U + &U _numberTable * -> _digit5 `ux -> -> # *U &U _numberTable `ui `ux ]
-[; ;main.c: 479: toWrite[6] = letter_space;
+[e = *U + &U _toWrite * -> -> -> 0 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_space ]
+[; ;main.c: 479: toWrite[1] = numberTable[digit1];
 "479
-[e = *U + &U _toWrite * -> -> -> 6 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_space ]
-[; ;main.c: 480: writeWord(toWrite, 48);
+[e = *U + &U _toWrite * -> -> -> 1 `i `ui `ux -> -> # *U &U _toWrite `ui `ux *U + &U _numberTable * -> _digit1 `ux -> -> # *U &U _numberTable `ui `ux ]
+[; ;main.c: 480: toWrite[2] = numberTable[digit2];
 "480
-[e ( _writeWord (2 , &U _toWrite -> -> 48 `i `uc ]
-[; ;main.c: 481: wallColor = 1;
+[e = *U + &U _toWrite * -> -> -> 2 `i `ui `ux -> -> # *U &U _toWrite `ui `ux *U + &U _numberTable * -> _digit2 `ux -> -> # *U &U _numberTable `ui `ux ]
+[; ;main.c: 481: toWrite[3] = numberTable[digit3];
 "481
-[e = _wallColor -> -> 1 `i `uc ]
-[; ;main.c: 482: }
+[e = *U + &U _toWrite * -> -> -> 3 `i `ui `ux -> -> # *U &U _toWrite `ui `ux *U + &U _numberTable * -> _digit3 `ux -> -> # *U &U _numberTable `ui `ux ]
+[; ;main.c: 482: toWrite[4] = numberTable[digit4];
 "482
+[e = *U + &U _toWrite * -> -> -> 4 `i `ui `ux -> -> # *U &U _toWrite `ui `ux *U + &U _numberTable * -> _digit4 `ux -> -> # *U &U _numberTable `ui `ux ]
+[; ;main.c: 483: toWrite[5] = numberTable[digit5];
+"483
+[e = *U + &U _toWrite * -> -> -> 5 `i `ui `ux -> -> # *U &U _toWrite `ui `ux *U + &U _numberTable * -> _digit5 `ux -> -> # *U &U _numberTable `ui `ux ]
+[; ;main.c: 484: toWrite[6] = letter_space;
+"484
+[e = *U + &U _toWrite * -> -> -> 6 `i `ui `ux -> -> # *U &U _toWrite `ui `ux &U _letter_space ]
+[; ;main.c: 485: writeWord(toWrite, 48);
+"485
+[e ( _writeWord (2 , &U _toWrite -> -> 48 `i `uc ]
+[; ;main.c: 486: wallColor = 1;
+"486
+[e = _wallColor -> -> 1 `i `uc ]
+[; ;main.c: 487: }
+"487
 [e :UE 1279 ]
 }
-"484
+"489
 [v _endGame `(v ~T0 @X0 1 ef1`uc ]
 {
-[; ;main.c: 484: void endGame(bool played) {
+[; ;main.c: 489: void endGame(bool played) {
 [e :U _endGame ]
 [v _played `uc ~T0 @X0 1 r1 ]
 [f ]
-[; ;main.c: 485: if (played) {
-"485
+[; ;main.c: 490: if (played) {
+"490
 [e $ ! != -> _played `i -> -> -> 0 `i `uc `i 1285  ]
 {
-[; ;main.c: 486: for (i = 0; i < 8; i++) {
-"486
+[; ;main.c: 491: for (i = 0; i < 8; i++) {
+"491
 {
 [e = _i -> -> 0 `i `uc ]
 [e $ < -> _i `i -> 8 `i 1286  ]
 [e $U 1287  ]
 [e :U 1286 ]
 {
-[; ;main.c: 487: pixelbuffer[i] = 0xFF00;
-"487
+[; ;main.c: 492: pixelbuffer[i] = 0xFF00;
+"492
 [e = *U + &U _pixelbuffer * -> _i `ux -> -> # *U &U _pixelbuffer `ui `ux -> 65280 `ui ]
-"488
+"493
 }
-"486
+"491
 [e ++ _i -> -> 1 `i `uc ]
 [e $ < -> _i `i -> 8 `i 1286  ]
 [e :U 1287 ]
-"488
+"493
 }
-[; ;main.c: 488: }
-[; ;main.c: 489: writeDisplay();
-"489
+[; ;main.c: 493: }
+[; ;main.c: 494: writeDisplay();
+"494
 [e ( _writeDisplay ..  ]
-[; ;main.c: 490: _delay((unsigned long)((200)*(32000000/4000.0)));
-"490
+[; ;main.c: 495: _delay((unsigned long)((200)*(32000000/4000.0)));
+"495
 [e ( __delay (1 -> * -> -> 200 `i `d / -> -> 32000000 `l `d .4000.0 `ul ]
-[; ;main.c: 491: clearPixels();
-"491
+[; ;main.c: 496: clearPixels();
+"496
 [e ( _clearPixels ..  ]
-[; ;main.c: 492: if (score > hiscore) {
-"492
+[; ;main.c: 497: if (score > hiscore) {
+"497
 [e $ ! > _score _hiscore 1289  ]
 {
-[; ;main.c: 493: hiscore = score;
-"493
+[; ;main.c: 498: hiscore = score;
+"498
 [e = _hiscore _score ]
-[; ;main.c: 494: write(10);
-"494
+[; ;main.c: 499: FLASH_WriteWord(hiscore_addr, zerobuf, hiscore);
+"499
+[e ( _FLASH_WriteWord (3 , , _hiscore_addr &U _zerobuf _hiscore ]
+[; ;main.c: 500: write(10);
+"500
 [e ( _write (1 -> -> 10 `i `uc ]
-"495
+"501
 }
-[; ;main.c: 495: } else {
+[; ;main.c: 501: } else {
 [e $U 1290  ]
 [e :U 1289 ]
 {
-[; ;main.c: 496: write(12);
-"496
+[; ;main.c: 502: write(12);
+"502
 [e ( _write (1 -> -> 12 `i `uc ]
-"497
+"503
 }
 [e :U 1290 ]
-"498
+"504
 }
-[; ;main.c: 497: }
-[; ;main.c: 498: } else {
+[; ;main.c: 503: }
+[; ;main.c: 504: } else {
 [e $U 1291  ]
 [e :U 1285 ]
 {
-[; ;main.c: 499: write(11);
-"499
+[; ;main.c: 505: write(11);
+"505
 [e ( _write (1 -> -> 11 `i `uc ]
-"500
+"506
 }
 [e :U 1291 ]
-[; ;main.c: 500: }
-[; ;main.c: 501: clearPixels();
-"501
+[; ;main.c: 506: }
+[; ;main.c: 507: clearPixels();
+"507
 [e ( _clearPixels ..  ]
-[; ;main.c: 502: writeDisplay();
-"502
+[; ;main.c: 508: writeDisplay();
+"508
 [e ( _writeDisplay ..  ]
-[; ;main.c: 503: for (i = 0; i < 8; i++) {
-"503
+[; ;main.c: 509: for (i = 0; i < 8; i++) {
+"509
 {
 [e = _i -> -> 0 `i `uc ]
 [e $ < -> _i `i -> 8 `i 1292  ]
 [e $U 1293  ]
 [e :U 1292 ]
 {
-[; ;main.c: 504: walls[i] = 0;
-"504
+[; ;main.c: 510: walls[i] = 0;
+"510
 [e = *U + &U _walls * -> _i `ux -> -> # *U &U _walls `ui `ux -> -> 0 `i `uc ]
-"505
+"511
 }
-"503
+"509
 [e ++ _i -> -> 1 `i `uc ]
 [e $ < -> _i `i -> 8 `i 1292  ]
 [e :U 1293 ]
-"505
+"511
 }
-[; ;main.c: 505: }
-[; ;main.c: 506: writeDisplay();
-"506
+[; ;main.c: 511: }
+[; ;main.c: 512: writeDisplay();
+"512
 [e ( _writeDisplay ..  ]
-[; ;main.c: 507: start = 0;
-"507
+[; ;main.c: 513: start = 0;
+"513
 [e = _start -> -> 0 `i `uc ]
-[; ;main.c: 508: while (!start);
-"508
+[; ;main.c: 514: while (!start);
+"514
 [e $U 1295  ]
 [e :U 1296 ]
 [e :U 1295 ]
 [e $ ! != -> _start `i -> -> -> 0 `i `uc `i 1296  ]
 [e :U 1297 ]
-[; ;main.c: 509: elevation = 3;
-"509
+[; ;main.c: 515: elevation = 3;
+"515
 [e = _elevation -> -> 3 `i `uc ]
-[; ;main.c: 510: gravityCounter = 0;
-"510
+[; ;main.c: 516: gravityCounter = 0;
+"516
 [e = _gravityCounter -> -> 0 `i `uc ]
-[; ;main.c: 511: shiftCounter = 0;
-"511
+[; ;main.c: 517: shiftCounter = 0;
+"517
 [e = _shiftCounter -> -> 0 `i `ui ]
-[; ;main.c: 512: score = 0;
-"512
+[; ;main.c: 518: score = 0;
+"518
 [e = _score -> -> 0 `i `ui ]
-[; ;main.c: 513: }
-"513
+[; ;main.c: 519: }
+"519
 [e :UE 1284 ]
 }
 [v $root$_main `(v ~T0 @X0 0 e ]
-"515
+"521
 [v _main `(v ~T0 @X0 1 ef ]
 {
-[; ;main.c: 515: void main(void) {
+[; ;main.c: 521: void main(void) {
 [e :U _main ]
 [f ]
-[; ;main.c: 516: SYSTEM_Initialize();
-"516
-[e ( _SYSTEM_Initialize ..  ]
-[; ;main.c: 517: (INTCONbits.GIE = 1);
-"517
-[e = . . _INTCONbits 0 7 -> -> 1 `i `uc ]
-[; ;main.c: 518: (INTCONbits.PEIE = 1);
-"518
-[e = . . _INTCONbits 0 6 -> -> 1 `i `uc ]
-[; ;main.c: 520: initializeDisplay();
-"520
-[e ( _initializeDisplay ..  ]
-[; ;main.c: 522: IOCCF4_SetInterruptHandler(buttonInterrupt);
+[; ;main.c: 522: SYSTEM_Initialize();
 "522
-[e ( _IOCCF4_SetInterruptHandler (1 &U _buttonInterrupt ]
-[; ;main.c: 524: endGame(0);
+[e ( _SYSTEM_Initialize ..  ]
+[; ;main.c: 523: (INTCONbits.GIE = 1);
+"523
+[e = . . _INTCONbits 0 7 -> -> 1 `i `uc ]
+[; ;main.c: 524: (INTCONbits.PEIE = 1);
 "524
-[e ( _endGame (1 -> -> 0 `i `uc ]
-[; ;main.c: 526: while (1) {
+[e = . . _INTCONbits 0 6 -> -> 1 `i `uc ]
+[; ;main.c: 526: initializeDisplay();
 "526
-[e :U 1300 ]
-{
-[; ;main.c: 527: drawPixel(1, elevation, 3);
-"527
-[e ( _drawPixel (3 , , -> -> 1 `i `uc _elevation -> -> 3 `i `uc ]
-[; ;main.c: 528: drawWalls();
+[e ( _initializeDisplay ..  ]
+[; ;main.c: 528: IOCCF4_SetInterruptHandler(buttonInterrupt);
 "528
-[e ( _drawWalls ..  ]
-[; ;main.c: 529: writeDisplay();
-"529
-[e ( _writeDisplay ..  ]
-[; ;main.c: 530: clearPixels();
+[e ( _IOCCF4_SetInterruptHandler (1 &U _buttonInterrupt ]
+[; ;main.c: 530: hiscore = FLASH_ReadWord(hiscore_addr);
 "530
-[e ( _clearPixels ..  ]
-[; ;main.c: 531: if (elevation < 0 || elevation > 7 || (walls[elevation] & 0b01000000)) {
+[e = _hiscore ( _FLASH_ReadWord (1 _hiscore_addr ]
+[; ;main.c: 531: if (hiscore == 16383) {
 "531
-[e $ ! || || < -> _elevation `i -> 0 `i > -> _elevation `i -> 7 `i != & -> *U + &U _walls * -> _elevation `ux -> -> # *U &U _walls `ui `ux `i -> 64 `i -> 0 `i 1302  ]
+[e $ ! == _hiscore -> -> 16383 `i `ui 1299  ]
 {
-[; ;main.c: 532: endGame(1);
+[; ;main.c: 532: hiscore = 0;
 "532
-[e ( _endGame (1 -> -> 1 `i `uc ]
+[e = _hiscore -> -> 0 `i `ui ]
+[; ;main.c: 533: FLASH_WriteWord(hiscore_addr, zerobuf, hiscore);
 "533
-}
-[e :U 1302 ]
-[; ;main.c: 533: }
-[; ;main.c: 534: if (gravityCounter >= 80) {
+[e ( _FLASH_WriteWord (3 , , _hiscore_addr &U _zerobuf _hiscore ]
 "534
-[e $ ! >= -> _gravityCounter `i -> 80 `i 1303  ]
-{
-[; ;main.c: 535: if (fall) {
-"535
-[e $ ! != -> _fall `i -> -> -> 0 `i `uc `i 1304  ]
-{
-[; ;main.c: 536: elevation += 1;
-"536
-[e =+ _elevation -> -> 1 `i `uc ]
-"537
-}
-[; ;main.c: 537: } else {
-[e $U 1305  ]
-[e :U 1304 ]
-{
-[; ;main.c: 538: elevation -= 1;
-"538
-[e =- _elevation -> -> 1 `i `uc ]
-[; ;main.c: 539: fall = 1;
-"539
-[e = _fall -> -> 1 `i `uc ]
-"540
-}
-[e :U 1305 ]
-[; ;main.c: 540: }
-[; ;main.c: 541: gravityCounter = 0;
-"541
-[e = _gravityCounter -> -> 0 `i `uc ]
-"542
-}
-[; ;main.c: 542: } else {
-[e $U 1306  ]
-[e :U 1303 ]
-{
-[; ;main.c: 543: gravityCounter++;
-"543
-[e ++ _gravityCounter -> -> 1 `i `uc ]
-"544
-}
-[e :U 1306 ]
-[; ;main.c: 544: }
-[; ;main.c: 545: if (shiftCounter >= 100) {
-"545
-[e $ ! >= _shiftCounter -> -> 100 `i `ui 1307  ]
-{
-[; ;main.c: 546: shiftWalls();
-"546
-[e ( _shiftWalls ..  ]
-[; ;main.c: 547: shiftCounter = 0;
-"547
-[e = _shiftCounter -> -> 0 `i `ui ]
-"548
-}
-[; ;main.c: 548: } else {
-[e $U 1308  ]
-[e :U 1307 ]
-{
-[; ;main.c: 549: shiftCounter++;
-"549
-[e ++ _shiftCounter -> -> 1 `i `ui ]
-"550
-}
-[e :U 1308 ]
-"551
 }
 [e :U 1299 ]
-"526
-[e $U 1300  ]
+[; ;main.c: 534: }
+[; ;main.c: 536: endGame(0);
+"536
+[e ( _endGame (1 -> -> 0 `i `uc ]
+[; ;main.c: 538: while (1) {
+"538
 [e :U 1301 ]
-[; ;main.c: 550: }
-[; ;main.c: 551: }
-[; ;main.c: 552: }
+{
+[; ;main.c: 539: drawPixel(1, elevation, 3);
+"539
+[e ( _drawPixel (3 , , -> -> 1 `i `uc _elevation -> -> 3 `i `uc ]
+[; ;main.c: 540: drawWalls();
+"540
+[e ( _drawWalls ..  ]
+[; ;main.c: 541: writeDisplay();
+"541
+[e ( _writeDisplay ..  ]
+[; ;main.c: 542: clearPixels();
+"542
+[e ( _clearPixels ..  ]
+[; ;main.c: 543: if (elevation < 0 || elevation > 7 || (walls[elevation] & 0b01000000)) {
+"543
+[e $ ! || || < -> _elevation `i -> 0 `i > -> _elevation `i -> 7 `i != & -> *U + &U _walls * -> _elevation `ux -> -> # *U &U _walls `ui `ux `i -> 64 `i -> 0 `i 1303  ]
+{
+[; ;main.c: 544: endGame(1);
+"544
+[e ( _endGame (1 -> -> 1 `i `uc ]
+"545
+}
+[e :U 1303 ]
+[; ;main.c: 545: }
+[; ;main.c: 546: if (gravityCounter >= 80) {
+"546
+[e $ ! >= -> _gravityCounter `i -> 80 `i 1304  ]
+{
+[; ;main.c: 547: if (fall) {
+"547
+[e $ ! != -> _fall `i -> -> -> 0 `i `uc `i 1305  ]
+{
+[; ;main.c: 548: elevation += 1;
+"548
+[e =+ _elevation -> -> 1 `i `uc ]
+"549
+}
+[; ;main.c: 549: } else {
+[e $U 1306  ]
+[e :U 1305 ]
+{
+[; ;main.c: 550: elevation -= 1;
+"550
+[e =- _elevation -> -> 1 `i `uc ]
+[; ;main.c: 551: fall = 1;
+"551
+[e = _fall -> -> 1 `i `uc ]
 "552
+}
+[e :U 1306 ]
+[; ;main.c: 552: }
+[; ;main.c: 553: gravityCounter = 0;
+"553
+[e = _gravityCounter -> -> 0 `i `uc ]
+"554
+}
+[; ;main.c: 554: } else {
+[e $U 1307  ]
+[e :U 1304 ]
+{
+[; ;main.c: 555: gravityCounter++;
+"555
+[e ++ _gravityCounter -> -> 1 `i `uc ]
+"556
+}
+[e :U 1307 ]
+[; ;main.c: 556: }
+[; ;main.c: 557: if (shiftCounter >= 100) {
+"557
+[e $ ! >= _shiftCounter -> -> 100 `i `ui 1308  ]
+{
+[; ;main.c: 558: shiftWalls();
+"558
+[e ( _shiftWalls ..  ]
+[; ;main.c: 559: shiftCounter = 0;
+"559
+[e = _shiftCounter -> -> 0 `i `ui ]
+"560
+}
+[; ;main.c: 560: } else {
+[e $U 1309  ]
+[e :U 1308 ]
+{
+[; ;main.c: 561: shiftCounter++;
+"561
+[e ++ _shiftCounter -> -> 1 `i `ui ]
+"562
+}
+[e :U 1309 ]
+"563
+}
+[e :U 1300 ]
+"538
+[e $U 1301  ]
+[e :U 1302 ]
+[; ;main.c: 562: }
+[; ;main.c: 563: }
+[; ;main.c: 564: }
+"564
 [e :UE 1298 ]
 }

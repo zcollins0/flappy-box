@@ -14833,6 +14833,18 @@ inline void i2c_driver_setI2cISR(void *f);
 void (*i2c_driver_busCollisionISR)(void);
 void (*i2c_driver_i2cISR)(void);
 
+# 98 "mcc_generated_files/memory.h"
+uint16_t FLASH_ReadWord(uint16_t flashAddr);
+
+# 127
+void FLASH_WriteWord(uint16_t flashAddr, uint16_t *ramBuf, uint16_t word);
+
+# 163
+int8_t FLASH_WriteBlock(uint16_t writeAddr, uint16_t *flashWordArray);
+
+# 188
+void FLASH_EraseBlock(uint16_t startAddr);
+
 # 29 "mcc_generated_files/drivers/i2c_types.h"
 typedef enum {
 I2C_NOERR,
@@ -14861,16 +14873,6 @@ i2c_operations_t i2c_returnReset(void *p);
 i2c_operations_t i2c_restartWrite(void *p);
 i2c_operations_t i2c_restartRead(void *p);
 
-# 29 "mcc_generated_files/drivers/i2c_simple_master.h"
-uint8_t i2c_read1ByteRegister(i2c_address_t address, uint8_t reg);
-uint16_t i2c_read2ByteRegister(i2c_address_t address, uint8_t reg);
-void i2c_write1ByteRegister(i2c_address_t address, uint8_t reg, uint8_t data);
-void i2c_write2ByteRegister(i2c_address_t address, uint8_t reg, uint16_t data);
-
-void i2c_writeNBytes(i2c_address_t address, void* data, size_t len);
-void i2c_readDataBlock(i2c_address_t address, uint8_t reg, void *data, size_t len);
-void i2c_readNBytes(i2c_address_t address, void *data, size_t len);
-
 # 31 "mcc_generated_files/drivers/i2c_master.h"
 typedef i2c_operations_t (*i2c_callback)(void *p);
 
@@ -14897,10 +14899,20 @@ void i2c_setTimeOutCallback(i2c_callback cb, void *p);
 void i2c_ISR(void);
 void i2c_busCollisionISR(void);
 
-# 71 "mcc_generated_files/mcc.h"
+# 29 "mcc_generated_files/drivers/i2c_simple_master.h"
+uint8_t i2c_read1ByteRegister(i2c_address_t address, uint8_t reg);
+uint16_t i2c_read2ByteRegister(i2c_address_t address, uint8_t reg);
+void i2c_write1ByteRegister(i2c_address_t address, uint8_t reg, uint8_t data);
+void i2c_write2ByteRegister(i2c_address_t address, uint8_t reg, uint16_t data);
+
+void i2c_writeNBytes(i2c_address_t address, void* data, size_t len);
+void i2c_readDataBlock(i2c_address_t address, uint8_t reg, void *data, size_t len);
+void i2c_readNBytes(i2c_address_t address, void *data, size_t len);
+
+# 72 "mcc_generated_files/mcc.h"
 void SYSTEM_Initialize(void);
 
-# 84
+# 85
 void OSCILLATOR_Initialize(void);
 
 # 7 "C:\Program Files (x86)\Microchip\xc8\v1.45\include\stdlib.h"
@@ -14989,7 +15001,10 @@ uint16_t shiftCounter = 0;
 uint8_t i = 0;
 uint8_t wallColor = 1;
 
-# 75
+uint16_t hiscore_addr = 0x1F05;
+uint16_t zerobuf[32];
+
+# 78
 uint8_t letter_space[8] = {
 0b00000000,
 0b00000000,
@@ -15378,6 +15393,8 @@ digit3 = (number/100)%10;
 digit4 = (number/10)%10;
 digit5 = number%10;
 uint8_t * toWrite[7];
+
+
 uint8_t letter_space[8] = {
 0b00000000,
 0b00000000,
@@ -15409,6 +15426,7 @@ _delay((unsigned long)((200)*(32000000/4000.0)));
 clearPixels();
 if (score > hiscore) {
 hiscore = score;
+FLASH_WriteWord(hiscore_addr, zerobuf, hiscore);
 write(10);
 } else {
 write(12);
@@ -15438,6 +15456,12 @@ SYSTEM_Initialize();
 initializeDisplay();
 
 IOCCF4_SetInterruptHandler(buttonInterrupt);
+
+hiscore = FLASH_ReadWord(hiscore_addr);
+if (hiscore == 16383) {
+hiscore = 0;
+FLASH_WriteWord(hiscore_addr, zerobuf, hiscore);
+}
 
 endGame(0);
 
