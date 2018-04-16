@@ -57,6 +57,7 @@ uint16_t score = 0;
 uint16_t hiscore = 0;
 bool fall = true;
 bool start = false;
+bool stopPrinting = false;
 uint8_t gravityCounter = 0;
 uint16_t shiftCounter = 0;
 
@@ -394,6 +395,7 @@ void shiftWalls() {
 
 void buttonInterrupt() {
     start = true;
+    stopPrinting = true;
     fall = false;
     if (gravityCounter < 255) {
         gravityCounter = 255;
@@ -405,6 +407,7 @@ void writeWord(uint8_t ** text, uint8_t len) {
         walls[i] = 0;
     }
     for (uint8_t idx = 0; idx < len; idx++) {
+        if (stopPrinting) return;
         uint8_t shiftValue = idx % 8;
         for (uint8_t k = 0; k < 8; k++) {
             walls[k] = ((text[idx / 8][k]) << shiftValue) |
@@ -418,8 +421,9 @@ void writeWord(uint8_t ** text, uint8_t len) {
 }
 
 void write(uint8_t selection) {
+    stopPrinting = false;
     uint16_t number = 0;
-    if (selection == NEW_HISCORE) {
+    if (selection == NEW_HISCORE && !stopPrinting) {
         wallColor = YELLOW;
         uint8_t * toWrite[5];
         toWrite[0] = letter_space;
@@ -429,7 +433,7 @@ void write(uint8_t selection) {
         toWrite[4] = letter_space;
         writeWord(toWrite, 32);
     }
-    if (selection == OLD_HISCORE || selection == NEW_HISCORE) {
+    if ((selection == OLD_HISCORE || selection == NEW_HISCORE) && !stopPrinting) {
         uint8_t * toWrite[8];
         toWrite[0] = letter_space;
         toWrite[1] = letter_hi;
@@ -441,7 +445,7 @@ void write(uint8_t selection) {
         toWrite[7] = letter_space;
         writeWord(toWrite, 56);
     }
-    if (selection == PLAYERSUCKS) {
+    if (selection == PLAYERSUCKS && !stopPrinting) {
         wallColor = RED;
         uint8_t * toWrite[7];
         toWrite[0] = letter_space;
@@ -456,34 +460,41 @@ void write(uint8_t selection) {
     } else {
         number = hiscore;
     }
-    uint8_t digit1,digit2,digit3,digit4,digit5;
-    digit1 = (number/10000)%10;
-    digit2 = (number/1000)%10;
-    digit3 = (number/100)%10;
-    digit4 = (number/10)%10;
-    digit5 = number%10;
-    uint8_t * toWrite[7];
-    // i have no idea why, but we need to redefine space here
-    // otherwise it screws up the space display permanently
-    uint8_t letter_space[8] = {
-    0b00000000,
-    0b00000000,
-    0b00000000,
-    0b00000000,
-    0b00000000,
-    0b00000000,
-    0b00000000,
-    0b00000000
-    };
-    toWrite[0] = letter_space;
-    toWrite[1] = numberTable[digit1];
-    toWrite[2] = numberTable[digit2];
-    toWrite[3] = numberTable[digit3];
-    toWrite[4] = numberTable[digit4];
-    toWrite[5] = numberTable[digit5];
-    toWrite[6] = letter_space;
-    writeWord(toWrite, 48);
-    wallColor = GREEN;
+    if (!stopPrinting) {
+        uint8_t digits[5];
+        digits[0] = (number / 10000) % 10;
+        digits[1] = (number / 1000) % 10;
+        digits[2] = (number / 100) % 10;
+        digits[3] = (number / 10) % 10;
+        digits[4] = number % 10;
+        uint8_t * toWrite[7];
+        // i have no idea why, but we need to redefine space here
+        // otherwise it screws up the space display permanently
+        uint8_t letter_space[8] = {
+            0b00000000,
+            0b00000000,
+            0b00000000,
+            0b00000000,
+            0b00000000,
+            0b00000000,
+            0b00000000,
+            0b00000000
+        };
+        toWrite[0] = letter_space;
+        uint8_t writeCounter = 1;
+        for (uint8_t x = 0; x < 5; x++) {
+            if (digits[x] != 0) {
+                toWrite[writeCounter] = numberTable[digits[x]];
+                writeCounter++;
+            }
+        }
+        if (writeCounter == 1) {
+            toWrite[writeCounter] = numberTable[0];
+            writeCounter++;
+        }
+        toWrite[writeCounter] = letter_space;
+        writeWord(toWrite, writeCounter*8);
+    }
 }
 
 void endGame(bool played) {
@@ -506,6 +517,7 @@ void endGame(bool played) {
     }
     clearPixels();
     writeDisplay();
+    wallColor = GREEN;
     for (i = 0; i < 8; i++) {
         walls[i] = 0;
     }
@@ -526,7 +538,7 @@ void main(void) {
     initializeDisplay();
 
     IOCCF4_SetInterruptHandler(buttonInterrupt);
-    
+
     hiscore = FLASH_ReadWord(hiscore_addr);
     if (hiscore == 16383) {
         hiscore = 0;
@@ -543,7 +555,7 @@ void main(void) {
         if (elevation < 0 || elevation > 7 || (walls[elevation] & 0b01000000)) {
             endGame(true);
         }
-        if (gravityCounter >= 80) {
+        if (gravityCounter >= 70) {
             if (fall) {
                 elevation += 1;
             } else {
@@ -554,7 +566,7 @@ void main(void) {
         } else {
             gravityCounter++;
         }
-        if (shiftCounter >= 100) {
+        if (shiftCounter >= 80) {
             shiftWalls();
             shiftCounter = 0;
         } else {
