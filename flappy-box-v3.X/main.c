@@ -497,6 +497,7 @@ void write(uint8_t selection) {
     }
 }
 
+/* Performs program reset for startup/endgame */
 void endGame(bool played) {
     if (played) {
         for (i = 0; i < 8; i++) {
@@ -540,6 +541,9 @@ void main(void) {
     IOCCF4_SetInterruptHandler(buttonInterrupt);
 
     hiscore = FLASH_ReadWord(hiscore_addr);
+    // if hiscore is 16383, either we're dealing with a really good player
+    // or we just reprogrammed the board. either way, not interested in
+    // keeping the score.
     if (hiscore == 16383) {
         hiscore = 0;
         FLASH_WriteWord(hiscore_addr, zerobuf, hiscore);
