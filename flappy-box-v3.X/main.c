@@ -67,6 +67,8 @@ uint8_t wallColor = 1;
 uint16_t hiscore_addr = 0x1F05;
 uint16_t zerobuf[ERASE_FLASH_BLOCKSIZE];
 
+uint16_t potDelay;
+
 #define OFF 0
 #define GREEN 1
 #define RED 2
@@ -529,10 +531,15 @@ void endGame(bool played) {
     gravityCounter = 0;
     shiftCounter = 0;
     score = 0;
+    
+    
+    adc_result_t adcreading = ADC_GetConversion(channel_AN4);
+    potDelay = 160-(adcreading/450);
 }
 
 void main(void) {
     SYSTEM_Initialize();
+    ADC_Initialize();
     INTERRUPT_GlobalInterruptEnable();
     INTERRUPT_PeripheralInterruptEnable();
 
@@ -570,7 +577,7 @@ void main(void) {
         } else {
             gravityCounter++;
         }
-        if (shiftCounter >= 80) {
+        if (shiftCounter >= potDelay) {
             shiftWalls();
             shiftCounter = 0;
         } else {

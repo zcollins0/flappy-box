@@ -52,6 +52,7 @@
 #include "interrupt_manager.h"
 #include "i2c_driver.h"
 #include "memory.h"
+#include "adc.h"
 #include "drivers/i2c_master.h"
 #include "drivers/i2c_simple_master.h"
 
